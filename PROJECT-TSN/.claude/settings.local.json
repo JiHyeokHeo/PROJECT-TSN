@@ -1,0 +1,35 @@
+{
+  "includeGitInstructions": false,
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(taskkill /PID 42448 /F)",
+      "Bash(taskkill:*)",
+      "Bash(wmic process:*)",
+      "Read(//c/Users/HEOJIHYEOK/AppData/Local/Unity/Editor/**)",
+      "Read(//c/Users/HEOJIHYEOK/AppData/Roaming/Unity/**)",
+      "mcp__toryagent__get_server_status",
+      "mcp__toryagent__get_scene_info",
+      "mcp__toryagent__get_scene_hierarchy",
+      "mcp__toryagent__create_gameobject",
+      "mcp__toryagent__add_component",
+      "mcp__toryagent__find_gameobjects",
+      "mcp__toryagent__get_components",
+      "mcp__toryagent__delete_gameobject",
+      "mcp__toryagent__echo",
+      "mcp__toryagent__set_component_property",
+      "mcp__toryagent__create_ui_element",
+      "mcp__toryagent__set_rect_transform",
+      "mcp__toryagent__set_ui_color",
+      "mcp__toryagent__set_ui_text",
+      "Bash(ls:*)",
+      "Bash(find /mnt/c/Users/HEOJIHYEOK/Desktop/Fitting/PROJECT-H/My project/Assets/PROJECT-A -type f \\\\\\(-name *.png -o -name *.jpg \\\\\\))",
+      "Bash(cd /mnt/c/Users/HEOJIHYEOK/Desktop/Fitting/PROJECT-H/My project)"
+    ]
+  },
+  "model": "sonnet",
+  "enableAllProjectMcpServers": false,
+  "enabledMcpjsonServers": [
+    "toryagent"
+  ]
+}
