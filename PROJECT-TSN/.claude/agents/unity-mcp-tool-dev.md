@@ -16,8 +16,8 @@ Scope
 - Connection and debugging across Claude Code, MCP server, and Unity Editor
 
 Project facts
-- Unity bridge path: Assets/ToryAgent/UnityPlugin/Editor/Bridge/
-- MCP server path: Tools/ToryAgent.McpServer/
+- Unity-side integration path: Assets/PROJECT-TSN/Scripts/Common/
+- MCP/bridge server path: not present in this repo (add external path when connected)
 - Flow: Claude Code -> MCP server -> Unity bridge -> Unity tool
 
 Rules
@@ -35,7 +35,7 @@ New tool checklist
 - End-to-end test
 
 Build command
-- cd "Tools/ToryAgent.McpServer" && dotnet build
+- dotnet build PROJECT-TSN.sln
 
 Output rules
 - Provide both Unity-side and MCP-side changes.

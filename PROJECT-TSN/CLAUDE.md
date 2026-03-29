@@ -11,20 +11,30 @@ Purpose
 Repo summary
 
 * Unity project root: PROJECT-TSN/
-* Main game code: Assets/Common/
-* Claude agent config: Assets/.claude/
-* ToryAgent MCP server: Assets/Tools/ToryAgent.McpServer/
+* Main game code: Assets/PROJECT-TSN/Scripts/Common/
+* Main scene assets: Assets/PROJECT-TSN/Scenes/
+* Render/input settings: Assets/PROJECT-TSN/Settings/
+* Tutorial and onboarding assets: Assets/PROJECT-TSN/TutorialInfo/
 
 Important paths
 
-* Assets/Common/
-* Assets/Common/Contents/
-* Assets/Scenes/
-* Assets/Tools/ToryAgent.McpServer/
-* Assets/.claude/agents/
-* Assets/.claude/skills/
+* Assets/PROJECT-TSN/Scripts/Common/
+* Assets/PROJECT-TSN/Scripts/Common/Contents/
+* Assets/PROJECT-TSN/Scenes/
+* Assets/PROJECT-TSN/Settings/
+* Assets/PROJECT-TSN/InputSystem_Actions.inputactions
 * Packages/manifest.json
 * ProjectSettings/ProjectVersion.txt
+
+Agent files
+
+* .claude/agents/requirement-planner.md
+* .claude/agents/game-design-architect.md
+* .claude/agents/unity-content-developer.md
+* .claude/agents/unity-db-ui-dev.md
+* .claude/agents/unity-mcp-tool-dev.md
+* .claude/agents/unity-server-dev.md
+* .claude/agents/art-asset-manager.md
 
 Core architecture
 
@@ -58,7 +68,6 @@ Global rules
 * Do not hardcode service ports if config already exists.
 * Prefer extending existing systems over adding new singletons.
 * Keep save data JSON-safe and backward-compatible.
-* For MCP work, keep stdout clean and return structured errors.
 
 Agent routing
 
@@ -86,9 +95,6 @@ Selection rule
 * If the task crosses domains, use the primary agent for the main task and consult a second agent only for the dependent part.
 * For gameplay feature requests, prefer game-design-architect first for design and unity-content-developer next for implementation.
 * For UI tied to save data or data models, prefer unity-db-ui-dev.
-* For Claude-Unity bridge problems, decide between unity-mcp-tool-dev and unity-server-dev based on where the failure lives:
-* Unity/editor/tool side = unity-mcp-tool-dev.
-* MCP server/process/protocol side = unity-server-dev.
 
 Work order
 
@@ -98,5 +104,4 @@ Work order
 
 Useful commands
 
-* cd "Assets/Tools/ToryAgent.McpServer" && dotnet build
-* cd "Assets/Tools/ToryAgent.McpServer" && dotnet run
+* dotnet build PROJECT-TSN.sln

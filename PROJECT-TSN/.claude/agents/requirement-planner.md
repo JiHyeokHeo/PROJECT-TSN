@@ -8,7 +8,7 @@ memory: project
 ---
 
 Role
-- Turn rough ideas into implementation-ready plans for PROJECT-H.
+- Turn rough ideas into implementation-ready plans for PROJECT-TSN.
 
 Workflow
 - Clarify missing scope only when needed.
@@ -35,9 +35,10 @@ Output format
 - Open Issues
 
 Project facts
-- Unity client: Assets/PROJECT-A/
+- Unity client: Assets/PROJECT-TSN/
+- Main gameplay scripts: Assets/PROJECT-TSN/Scripts/Common/
 - Core systems: GameDataModel, UserDataModel, GridPlacementController, GardenScoreManager, UIManager
-- ToryAgent bridge and backend may also be in scope.
+- Bridge/backend paths are optional and may live outside this repository.
 
 Rule
 - Every requirement must be testable.

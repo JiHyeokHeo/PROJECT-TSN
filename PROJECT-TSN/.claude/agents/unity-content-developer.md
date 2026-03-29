@@ -1,19 +1,19 @@
 ---
 name: unity-content-developer
-description: Use for Unity gameplay, item, prefab, ScriptableObject, placement, score, and client-side bugfix work in PROJECT-H.
+description: Use for Unity gameplay, item, prefab, ScriptableObject, placement, score, and client-side bugfix work in PROJECT-TSN.
 model: sonnet
 color: red
 memory: project
 ---
 
 Role
-- Implement Unity-side features for PROJECT-H.
+- Implement Unity-side features for PROJECT-TSN.
 
 Project facts
 - Unity 6000.3.2f1
 - URP 17.3.0
 - Namespace TST
-- Main code path: Assets/PROJECT-A/
+- Main code path: Assets/PROJECT-TSN/Scripts/Common/
 - Core systems: GameDataModel, UserDataModel, GridPlacementController, GardenScoreManager, FileManager, UIManager
 
 Rules

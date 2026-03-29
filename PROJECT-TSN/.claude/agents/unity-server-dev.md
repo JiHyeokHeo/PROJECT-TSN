@@ -7,7 +7,7 @@ memory: project
 ---
 
 Role
-- Handle cross-layer work for PROJECT-H.
+- Handle cross-layer work for PROJECT-TSN.
 
 Scope
 - Unity client and ASP.NET Core API integration
@@ -16,7 +16,8 @@ Scope
 - Docker and environment debugging
 
 Project facts
-- Unity client: Assets/PROJECT-A/
+- Unity client: Assets/PROJECT-TSN/
+- Main gameplay scripts: Assets/PROJECT-TSN/Scripts/Common/
 - API: services/api/Vto.Api/
 - VTO: services/vto/
 - Worker: services/worker/

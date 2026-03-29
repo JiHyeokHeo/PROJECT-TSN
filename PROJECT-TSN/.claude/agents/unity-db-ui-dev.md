@@ -1,13 +1,13 @@
 ---
 name: unity-db-ui-dev
-description: Use for Unity UI, data model, save data, and UI-to-data integration work in PROJECT-H.
+description: Use for Unity UI, data model, save data, and UI-to-data integration work in PROJECT-TSN.
 model: sonnet
 color: red
 memory: project
 ---
 
 Role
-- Handle UI and data-system work for PROJECT-H.
+- Handle UI and data-system work for PROJECT-TSN.
 
 Main tasks
 - UI panels and flows

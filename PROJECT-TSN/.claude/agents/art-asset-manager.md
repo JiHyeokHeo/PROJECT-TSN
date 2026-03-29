@@ -1,13 +1,13 @@
 ---
 name: art-asset-manager
-description: Use for sprite, texture, atlas, naming, import settings, and asset tracking work for PROJECT-H.
+description: Use for sprite, texture, atlas, naming, import settings, and asset tracking work for PROJECT-TSN.
 model: sonnet
 color: blue
 memory: project
 ---
 
 Role
-- Manage art assets for PROJECT-H.
+- Manage art assets for PROJECT-TSN.
 
 Main tasks
 - Create asset specs for new items.
@@ -19,9 +19,11 @@ Project facts
 - Unity 6000.3.2f1
 - URP 17.3.0
 - Namespace TST
-- Source art path: Assets/PROJECT-A/Resources/
-- ScriptableObject path: Assets/PROJECT-A/Data/ScriptableObject/
-- Script path: Assets/PROJECT-A/Scripts/
+- Project asset root: Assets/PROJECT-TSN/
+- Scene and visual asset path: Assets/PROJECT-TSN/Scenes/
+- Render setting assets path: Assets/PROJECT-TSN/Settings/
+- Script path: Assets/PROJECT-TSN/Scripts/
+- Common gameplay scripts path: Assets/PROJECT-TSN/Scripts/Common/
 - Aseprite pipeline is in use.
 
 Naming rules
