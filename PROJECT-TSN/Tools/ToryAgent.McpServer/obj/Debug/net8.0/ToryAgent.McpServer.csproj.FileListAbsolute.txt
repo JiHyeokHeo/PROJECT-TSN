@@ -1,0 +1,28 @@
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.exe
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.deps.json
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.runtimeconfig.json
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.pdb
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.AssemblyInfoInputs.cache
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.AssemblyInfo.cs
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.csproj.CoreCompileInputs.cache
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.sourcelink.json
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\refint\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.pdb
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.genruntimeconfig.cache
+C:\Users\HEOJIHYEOK\Desktop\Fitting\PROJECT-H\My project\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ref\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.exe
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.deps.json
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.runtimeconfig.json
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\bin\Debug\net8.0\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.AssemblyInfoInputs.cache
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.AssemblyInfo.cs
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.csproj.CoreCompileInputs.cache
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.sourcelink.json
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\refint\ToryAgent.McpServer.dll
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.pdb
+C:\Users\HEOJIHYEOK\Desktop\PROJECT-TSN\PROJECT-TSN\Tools\ToryAgent.McpServer\obj\Debug\net8.0\ToryAgent.McpServer.genruntimeconfig.cache

@@ -2,8 +2,7 @@ PROJECT-TSN root instructions
 
 Purpose
 
-- Keep this file short.
-
+* Keep this file short.
 * Put only repo-wide rules here.
 * Put role-specific rules in agent files.
 * Use sub-agents when the task is specialized or spans multiple domains.
@@ -14,7 +13,6 @@ Repo summary
 * Main game code: Assets/PROJECT-TSN/Scripts/Common/
 * Main scene assets: Assets/PROJECT-TSN/Scenes/
 * Render/input settings: Assets/PROJECT-TSN/Settings/
-* Tutorial and onboarding assets: Assets/PROJECT-TSN/TutorialInfo/
 
 Important paths
 
@@ -22,7 +20,6 @@ Important paths
 * Assets/PROJECT-TSN/Scripts/Common/Contents/
 * Assets/PROJECT-TSN/Scenes/
 * Assets/PROJECT-TSN/Settings/
-* Assets/PROJECT-TSN/InputSystem_Actions.inputactions
 * Packages/manifest.json
 * ProjectSettings/ProjectVersion.txt
 
@@ -61,8 +58,6 @@ Global rules
 * Use namespace TST for game code.
 * Unity version: 6000.3.2f1.
 * URP version: 17.3.0.
-* Input package: com.unity.inputsystem 1.17.0.
-* Use Unity Input System.
 * Do not edit Unity-generated .csproj files.
 * Do not hardcode secrets.
 * Do not hardcode service ports if config already exists.
@@ -102,6 +97,3 @@ Work order
 * For new features: data model -> logic -> UI.
 * For debugging: state hypothesis, evidence, and fix.
 
-Useful commands
-
-* dotnet build PROJECT-TSN.sln

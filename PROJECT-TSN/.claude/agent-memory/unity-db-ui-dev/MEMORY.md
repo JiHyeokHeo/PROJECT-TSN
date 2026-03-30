@@ -1,0 +1,1 @@
+- [Starry Night Base Systems](project_starry_night_base_systems.md) — Core singletons (PlayerParameters, ObservationJournal, TelescopeData, PhaseManager) and UI (HUD_Parameters, MainLayoutController) for The Starry Night

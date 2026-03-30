@@ -24,7 +24,15 @@
       "mcp__toryagent__set_ui_text",
       "Bash(ls:*)",
       "Bash(find /mnt/c/Users/HEOJIHYEOK/Desktop/Fitting/PROJECT-H/My project/Assets/PROJECT-A -type f \\\\\\(-name *.png -o -name *.jpg \\\\\\))",
-      "Bash(cd /mnt/c/Users/HEOJIHYEOK/Desktop/Fitting/PROJECT-H/My project)"
+      "Bash(cd /mnt/c/Users/HEOJIHYEOK/Desktop/Fitting/PROJECT-H/My project)",
+      "Bash(find /c/Users/HEOJIHYEOK/Desktop/PROJECT-TSN/PROJECT-TSN/Assets -name *.prefab)",
+      "Bash(find /c/Users/HEOJIHYEOK/Desktop/PROJECT-TSN -path */ToryAgent.McpServer* -type f)",
+      "mcp__toryagent__set_transform",
+      "mcp__toryagent__set_gameobject_active",
+      "mcp__toryagent__set_gameobject_parent",
+      "mcp__toryagent__duplicate_gameobject",
+      "mcp__toryagent__save_scene",
+      "mcp__toryagent__get_gameobject_details"
     ]
   },
   "model": "sonnet",

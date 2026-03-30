@@ -36,7 +36,9 @@ namespace TST
 
         private void Start()
         {
-            SetCursorVisible(false);
+            //SetCursorVisible(false);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         private static void SetCursorVisible(bool isVisible)
@@ -184,17 +186,17 @@ namespace TST
 
         public void ChangeCursorVisibility(bool isVisible)
         {
-            if (isVisible == false)
-            {
-                if (UIManager.Singleton.ActiveCursorVisibleUIsCount <= 0)
-                {
-                    SetCursorVisible(false);
-                }
-            }
-            else
-            {
-                SetCursorVisible(true);
-            }
+            //if (isVisible == false)
+            //{
+            //    if (UIManager.Singleton.ActiveCursorVisibleUIsCount <= 0)
+            //    {
+            //        SetCursorVisible(false);
+            //    }
+            //}
+            //else
+            //{
+            //    SetCursorVisible(true);
+            //}
 
         }
     }

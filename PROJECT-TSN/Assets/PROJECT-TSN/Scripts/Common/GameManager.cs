@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TST
 {
@@ -27,47 +28,13 @@ namespace TST
         void Start()
         {
             // 한 프레임 뒤에 실행 → 모든 Start() (IdleBootstrapper 포함) 완료 후 건물 등록 보장
-            StartCoroutine(DelayedOfflineCheck());
+            //StartCoroutine(DelayedOfflineCheck());
         }
 
-        System.Collections.IEnumerator DelayedOfflineCheck()
-        {
-            yield return null;
-            HandleOfflineProductionOnStart();
-        }
-
-        void OnApplicationPause(bool paused)
-        {
-            if (paused) SaveSessionEnd();
-        }
-
-        void OnApplicationQuit()
-        {
-            SaveSessionEnd();
-        }
-
-        // ──────────────────────────────────────────────────
-        void HandleOfflineProductionOnStart()
-        {
-            long lastQuit = LoadLastQuitTime();
-            if (lastQuit <= 0L) return;
-
-            float offlineSeconds = Mathf.Max(0f, (float)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - lastQuit));
-            if (offlineSeconds > 10f)
-                ProductionManager.Singleton?.HandleOfflineProduction(offlineSeconds);
-        }
-
-        void SaveSessionEnd()
-        {
-            ProductionManager.Singleton?.SaveAllBuildingStates();
-            PlayerPrefs.SetString(LastQuitTimeKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
-            PlayerPrefs.Save();
-        }
-
-        static long LoadLastQuitTime()
-        {
-            string raw = PlayerPrefs.GetString(LastQuitTimeKey, "0");
-            return long.TryParse(raw, out long result) ? result : 0L;
-        }
+        //[Button()]
+        //void StartFishingButton()
+        //{
+        //    //FishingPhaseController.Singleton.StartFishing();
+        //}
     }
 }

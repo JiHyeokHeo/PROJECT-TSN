@@ -1,0 +1,14 @@
+{
+    "name": "ToryAgent.UnityPlugin",
+    "rootNamespace": "ToryAgent",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
