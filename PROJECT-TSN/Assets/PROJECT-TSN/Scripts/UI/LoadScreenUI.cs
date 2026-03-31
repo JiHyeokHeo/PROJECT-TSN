@@ -45,8 +45,9 @@ namespace TST
             if (loaded)
             {
                 Hide();
-                // Show the main layout so the player re-enters the game world
+                // 메인 레이아웃 표시 후, 복원된 페이즈를 강제 발동해 UI를 동기화합니다.
                 UIManager.Show<MainLayoutController>(UIList.MainLayout);
+                PhaseManager.Singleton.ForceTransitionTo(PhaseManager.Singleton.CurrentPhase);
             }
         }
 

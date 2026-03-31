@@ -4,21 +4,14 @@ using UnityEngine.UI;
 namespace TST
 {
     /// <summary>
-    /// Popup_Options — settings popup for BGM volume, SFX volume, and fullscreen toggle.
+    /// Popup_Options — BGM 볼륨, SFX 볼륨, 전체화면 설정 팝업.
     ///
-    /// Volume values are persisted via PlayerPrefs (keys: "Vol_BGM", "Vol_SFX").
-    /// AudioListener.volume is driven by BGM volume as a master proxy until a
-    /// dedicated audio system (SoundManager / AudioMixer) is wired in.
-    ///
-    /// Inspector wiring: bgmSlider, sfxSlider, fullscreenToggle, closeButton.
-    /// Prefab path: Resources/UI/Prefabs/UI.Popup_Options
+    /// 볼륨 설정은 SoundManager를 통해 PlayerPrefs에 영속합니다.
+    /// Inspector 연결: bgmSlider, sfxSlider, fullscreenToggle, closeButton.
+    /// Prefab 경로: Resources/UI/Prefabs/UI.Popup_Options
     /// </summary>
     public class OptionsPopupUI : UIBase
     {
-        private const string PrefKey_BGM        = "Vol_BGM";
-        private const string PrefKey_SFX        = "Vol_SFX";
-        private const float  DefaultVolume      = 1f;
-
         [SerializeField] private Slider bgmSlider;
         [SerializeField] private Slider sfxSlider;
         [SerializeField] private Toggle fullscreenToggle;
@@ -35,16 +28,12 @@ namespace TST
         }
 
         // ----------------------------------------------------------------
-        //  Show overloads
+        //  Show
         // ----------------------------------------------------------------
-        public override void Show()
-        {
-            Show(fromTitle: false);
-        }
+        public override void Show() => Show(fromTitle: false);
 
         /// <param name="fromTitle">
-        /// True when opened from the title screen — closing returns to TitleUI
-        /// instead of MenuPopupUI.
+        /// true 이면 닫을 때 TitleUI로 복귀, false 이면 MenuPopupUI로 복귀.
         /// </param>
         public void Show(bool fromTitle)
         {
@@ -54,20 +43,11 @@ namespace TST
         }
 
         // ----------------------------------------------------------------
-        //  Slider / toggle handlers
+        //  Slider / Toggle 핸들러
         // ----------------------------------------------------------------
-        private void OnBGMChanged(float value)
-        {
-            PlayerPrefs.SetFloat(PrefKey_BGM, value);
-            // Proxy until SoundManager is active
-            AudioListener.volume = value;
-        }
+        private void OnBGMChanged(float value) => SoundManager.Singleton.Volume_BGM = value;
 
-        private void OnSFXChanged(float value)
-        {
-            PlayerPrefs.SetFloat(PrefKey_SFX, value);
-            // SFX category hook — replace with SoundManager.Singleton.Volume_SFX = value
-        }
+        private void OnSFXChanged(float value) => SoundManager.Singleton.Volume_SFX = value;
 
         private static void OnFullscreenChanged(bool isFullscreen)
         {
@@ -75,11 +55,11 @@ namespace TST
         }
 
         // ----------------------------------------------------------------
-        //  Close
+        //  닫기
         // ----------------------------------------------------------------
         private void OnClose()
         {
-            PlayerPrefs.Save();
+            SoundManager.Singleton.SaveVolumes();
             Hide();
 
             if (_fromTitle)
@@ -89,19 +69,13 @@ namespace TST
         }
 
         // ----------------------------------------------------------------
-        //  Persistence
+        //  설정 불러오기
         // ----------------------------------------------------------------
         private void LoadSettings()
         {
-            float bgm = PlayerPrefs.GetFloat(PrefKey_BGM, DefaultVolume);
-            float sfx = PlayerPrefs.GetFloat(PrefKey_SFX, DefaultVolume);
-
-            bgmSlider.SetValueWithoutNotify(bgm);
-            sfxSlider.SetValueWithoutNotify(sfx);
+            bgmSlider.SetValueWithoutNotify(SoundManager.Singleton.Volume_BGM);
+            sfxSlider.SetValueWithoutNotify(SoundManager.Singleton.Volume_SFX);
             fullscreenToggle.SetIsOnWithoutNotify(Screen.fullScreen);
-
-            // Apply immediately so audio reflects saved state on open
-            AudioListener.volume = bgm;
         }
     }
 }

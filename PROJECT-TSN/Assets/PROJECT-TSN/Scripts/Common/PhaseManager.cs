@@ -25,7 +25,9 @@ namespace TST
         // ----------------------------------------------------------------
         //  Runtime state
         // ----------------------------------------------------------------
+        [field: SerializeField]
         public GamePhase CurrentPhase { get; private set; } = GamePhase.DayAttic;
+        [field: SerializeField]
         public int CurrentDay         { get; private set; } = 1;
 
         // ----------------------------------------------------------------
@@ -120,6 +122,28 @@ namespace TST
         {
             CurrentDay = Mathf.Max(1, day);
             Debug.LogFormat("[PhaseManager] Day restored to {0} from save data.", CurrentDay);
+        }
+
+        /// <summary>
+        /// Restores CurrentPhase directly from a save file. Does not fire OnPhaseChanged.
+        /// 로드 후 UI 갱신이 필요하면 ForceTransitionTo를 사용하십시오.
+        /// </summary>
+        public void ForceSetPhase(GamePhase phase)
+        {
+            CurrentPhase = phase;
+            Debug.LogFormat("[PhaseManager] Phase restored to {0} from save data.", phase);
+        }
+
+        /// <summary>
+        /// 페이즈를 강제 전환하고 OnPhaseChanged를 발동합니다.
+        /// 유효성 검사를 우회하므로 로드 직후 UI 동기화 용도로만 사용하십시오.
+        /// </summary>
+        public void ForceTransitionTo(GamePhase phase)
+        {
+            GamePhase oldPhase = CurrentPhase;
+            CurrentPhase = phase;
+            Debug.LogFormat("[PhaseManager] Force transition: {0} -> {1}  (Day {2})", oldPhase, phase, CurrentDay);
+            OnPhaseChanged?.Invoke(oldPhase, phase);
         }
 
         // ----------------------------------------------------------------

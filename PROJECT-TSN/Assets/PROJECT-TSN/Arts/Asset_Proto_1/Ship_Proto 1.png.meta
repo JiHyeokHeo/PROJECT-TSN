@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9fa5742211cfd844384e6335e7ca3eb9
+guid: bcff9e3bde189704086850f0da8ffd3f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,73 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ship_DiagLeft
+      name: Ship_Proto 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d302d763da906b499aa0cc56b341075
+      internalID: 1583682824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ship_Proto 1_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ed88f75251694641a845edb40f2631e
+      internalID: -1328220911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ship_Proto 1_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c3e5bab2cbe2eb42985490f432dc0e0
+      internalID: -818540219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ship_Proto 1_3
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +173,19 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000001
-      internalID: 1
+      spriteID: 47eebbef13fb8ca46ae8f0e633fea70b
+      internalID: -1875025352
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     - serializedVersion: 2
-      name: Ship_Up
+      name: Ship_Proto 1_4
       rect:
         serializedVersion: 2
         x: 32
@@ -129,19 +195,19 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000002
-      internalID: 2
+      spriteID: 9061fabbd9ea53e48b242885c420589a
+      internalID: -92236164
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     - serializedVersion: 2
-      name: Ship_DiagRight
+      name: Ship_Proto 1_5
       rect:
         serializedVersion: 2
         x: 64
@@ -151,19 +217,19 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000003
-      internalID: 3
+      spriteID: 02b379d0ff8431d42b4269e98b95a473
+      internalID: 1090963029
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     - serializedVersion: 2
-      name: Ship_Left
+      name: Ship_Proto 1_6
       rect:
         serializedVersion: 2
         x: 0
@@ -173,19 +239,19 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000004
-      internalID: 4
+      spriteID: fb0690a3fe14c144a80ecf7b2f208058
+      internalID: 1763336604
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     - serializedVersion: 2
-      name: Ship_Down
+      name: Ship_Proto 1_7
       rect:
         serializedVersion: 2
         x: 32
@@ -195,19 +261,19 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000005
-      internalID: 5
+      spriteID: d84218d6fd1a9544895798355b863904
+      internalID: 1942540955
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     - serializedVersion: 2
-      name: Ship_Right
+      name: Ship_Proto 1_8
       rect:
         serializedVersion: 2
         x: 64
@@ -217,37 +283,42 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e97eb03825dee720800000000000006
-      internalID: 6
+      spriteID: 27f8baaeef3b4c549bc7721446bce77f
+      internalID: -364813411
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
-      customData:
     outline: []
-    customData:
+    customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 0eac45fff5e6e1748bd61bdde198fcef
     internalID: 0
     vertices: []
-    indices:
+    indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":3.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Ship_DiagLeft: 1
-      Ship_Up: 2
-      Ship_DiagRight: 3
-      Ship_Left: 4
-      Ship_Down: 5
-      Ship_Right: 6
+      Ship_Proto 1_0: 1583682824
+      Ship_Proto 1_1: -1328220911
+      Ship_Proto 1_2: -818540219
+      Ship_Proto 1_3: -1875025352
+      Ship_Proto 1_4: -92236164
+      Ship_Proto 1_5: 1090963029
+      Ship_Proto 1_6: 1763336604
+      Ship_Proto 1_7: 1942540955
+      Ship_Proto 1_8: -364813411
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

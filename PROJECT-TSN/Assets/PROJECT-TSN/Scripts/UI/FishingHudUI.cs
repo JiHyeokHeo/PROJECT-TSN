@@ -32,9 +32,13 @@ namespace TST
         [Tooltip("내구도 바 (Image, Filled Horizontal). VesselHull 이 없으면 갱신 생략.")]
         [SerializeField] private Image durabilityBar;
 
-        [Tooltip("속도 바 (Image, Filled Horizontal). VesselController.SpeedRatio.")]
-        [SerializeField] private Image speedBar;
-
+        [Tooltip("속도 원형 (Image, Filled Horizontal). VesselController.SpeedRatio.")]
+        [SerializeField] private RectTransform circle;
+        [SerializeField] float maxSpeed = 10f;
+        [SerializeField] float minY = -55;
+        [SerializeField] float maxY = 105;
+        [SerializeField] float smoothTime = 0.08f;
+        float currentYVelocity;
         // ── UIBase 오버라이드 ─────────────────────────────────────────
 
         public override void Show()
@@ -73,10 +77,15 @@ namespace TST
 
         private void UpdateSpeedBar()
         {
-            if (speedBar == null) return;
+            if (circle == null) return;
             if (VesselController.Singleton == null) return;
 
-            speedBar.fillAmount = VesselController.Singleton.SpeedRatio;
+            float clampedRatio = Mathf.Clamp01(VesselController.Singleton.SpeedRatio);
+            float targetY = Mathf.Lerp(minY, maxY, clampedRatio);
+
+            Vector2 pos = circle.anchoredPosition;
+            pos.y = Mathf.SmoothDamp(pos.y, targetY, ref currentYVelocity, smoothTime);
+            circle.anchoredPosition = pos;
         }
 
         // ── 내구도 이벤트 바인딩 ──────────────────────────────────────

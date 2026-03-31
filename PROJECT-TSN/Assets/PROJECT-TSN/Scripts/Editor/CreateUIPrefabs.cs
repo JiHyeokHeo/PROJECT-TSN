@@ -12,12 +12,16 @@ namespace TST.Editor
     ///   UIManager.cs 의 UI_PREFAB_PATH = "UI/Prefabs/" 와 일치하는 Resources 경로.
     ///
     /// 생성 대상 (Panels):
+    ///   UI.MainLayout              — MainLayoutController
+    ///   UI.HUD_Parameters          — HUD_Parameters
     ///   UI.Panel_Title             — TitleUI
     ///   UI.Panel_Cutscene          — CutsceneController
     ///   UI.Panel_SaveScreen        — SaveScreenUI
     ///   UI.Panel_LoadScreen        — LoadScreenUI
     ///   UI.Panel_DreamKeySelection — DreamKeySelectionUI
     ///   UI.Panel_DreamVN           — DreamVNPanel
+    ///   UI.Panel_FishingHUD        — FishingHudUI
+    ///   UI.Panel_FishingTimer      — FishingTimerUI
     ///
     /// 생성 대상 (Popups):
     ///   UI.Popup_Menu              — MenuPopupUI
@@ -25,6 +29,12 @@ namespace TST.Editor
     ///   UI.Popup_DiceRoll          — DiceRollPopupUI
     ///   UI.Popup_Choice            — ChoicePopupUI
     ///   UI.Popup_NightTelescope    — NightTelescopePopupUI
+    ///   UI.Popup_Inventory         — InventoryPopupUI
+    ///   UI.Popup_ObservationJournal— ObservationJournalPopupUI
+    ///   UI.Popup_TelescopeUpgrade  — UniversityController
+    ///   UI.Popup_RecordDisposal    — AcademyController
+    ///   UI.Popup_FocusMinigame     — FocusMinigameUI
+    ///   UI.Popup_DecorationShop    — DecorationShopController
     ///
     /// Inspector 와이어링:
     ///   각 컴포넌트의 [SerializeField] 필드는 프리팹 생성 후
@@ -45,20 +55,32 @@ namespace TST.Editor
         {
             EnsureFolder(ResourcesRoot);
 
-            // Panels
+            // ── 메인 레이아웃 / HUD (가장 낮은 sortingOrder) ──────────────
+            CreatePrefab<MainLayoutController>("MainLayout",     50);
+            CreatePrefab<HUD_Parameters>      ("HUD_Parameters", 60);
+
+            // ── 패널 ────────────────────────────────────────────────────
             CreatePrefab<TitleUI>            ("Panel_Title",             PanelSortingOrder);
             CreatePrefab<CutsceneController> ("Panel_Cutscene",          PanelSortingOrder);
             CreatePrefab<SaveScreenUI>       ("Panel_SaveScreen",        PanelSortingOrder);
             CreatePrefab<LoadScreenUI>       ("Panel_LoadScreen",        PanelSortingOrder);
             CreatePrefab<DreamKeySelectionUI>("Panel_DreamKeySelection", PanelSortingOrder);
             CreatePrefab<DreamVNPanel>       ("Panel_DreamVN",           PanelSortingOrder);
+            CreatePrefab<FishingHudUI>       ("Panel_FishingHUD",        PanelSortingOrder);
+            CreatePrefab<FishingTimerUI>     ("Panel_FishingTimer",      PanelSortingOrder);
 
-            // Popups
-            CreatePrefab<MenuPopupUI>           ("Popup_Menu",           PopupSortingOrder);
-            CreatePrefab<OptionsPopupUI>        ("Popup_Options",        PopupSortingOrder);
-            CreatePrefab<DiceRollPopupUI>       ("Popup_DiceRoll",       PopupSortingOrder);
-            CreatePrefab<ChoicePopupUI>         ("Popup_Choice",         PopupSortingOrder);
-            CreatePrefab<NightTelescopePopupUI> ("Popup_NightTelescope", PopupSortingOrder);
+            // ── 팝업 ────────────────────────────────────────────────────
+            CreatePrefab<MenuPopupUI>              ("Popup_Menu",              PopupSortingOrder);
+            CreatePrefab<OptionsPopupUI>           ("Popup_Options",           PopupSortingOrder);
+            CreatePrefab<DiceRollPopupUI>          ("Popup_DiceRoll",          PopupSortingOrder);
+            CreatePrefab<ChoicePopupUI>            ("Popup_Choice",            PopupSortingOrder);
+            CreatePrefab<NightTelescopePopupUI>    ("Popup_NightTelescope",    PopupSortingOrder);
+            CreatePrefab<InventoryPopupUI>         ("Popup_Inventory",         PopupSortingOrder);
+            CreatePrefab<ObservationJournalPopupUI>("Popup_ObservationJournal",PopupSortingOrder);
+            CreatePrefab<UniversityController>     ("Popup_TelescopeUpgrade",  PopupSortingOrder);
+            CreatePrefab<AcademyController>        ("Popup_RecordDisposal",    PopupSortingOrder);
+            CreatePrefab<FocusMinigameUI>          ("Popup_FocusMinigame",     PopupSortingOrder);
+            CreatePrefab<DecorationShopController> ("Popup_DecorationShop",    PopupSortingOrder);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

@@ -12,18 +12,18 @@ namespace ToryAgent.UnityPlugin.Editor
 {
     public sealed class ClaudeEditorWindow : EditorWindow
     {
-        // ─── Constants ───────────────────────────────────────────────────────────
+        // Constants 
         private const string DefaultSettingsPath =
             "Assets/PROJECT-A/Resources/ToryAgent/ClaudeEditorSettings.asset";
 
         private static readonly string[] TabNames = { "Prompt", "MCP Tools", "Log", "Commands" };
 
-        // ─── Shared state ────────────────────────────────────────────────────────
+        // Shared state
         private readonly ClaudeEditorService _service = new ClaudeEditorService();
         private ClaudeEditorSettings _settings;
         private int _selectedTab;
 
-        // ─── Prompt tab ──────────────────────────────────────────────────────────
+        // Prompt tab
         private string _prompt = "Select a GameObject and describe the task.";
         private string _response = "";
         private string _stderr = "";
@@ -33,7 +33,7 @@ namespace ToryAgent.UnityPlugin.Editor
         private Vector2 _stderrScroll;
         private bool _isSending;
 
-        // ─── MCP Tools tab ───────────────────────────────────────────────────────
+        // MCP Tools tab
         [Serializable]
         private sealed class ToolInfo
         {
@@ -54,12 +54,12 @@ namespace ToryAgent.UnityPlugin.Editor
         private int _selectedToolIndex = -1;
         private Vector2 _toolsScroll;
 
-        // ─── Log tab ─────────────────────────────────────────────────────────────
+        // Log tab 
         private Vector2 _logScroll;
         private int _selectedLogIndex = -1;
         private bool _autoScrollLog = true;
 
-        // ─── Commands tab ────────────────────────────────────────────────────────
+        // Commands tab 
         private List<CustomCommand> _customCommands;
         private bool _isAddingCommand;
         private int _editingCommandIndex = -1;
@@ -68,13 +68,12 @@ namespace ToryAgent.UnityPlugin.Editor
         private string _editPrompt = "";
         private Vector2 _commandsScroll;
 
-        // ─── Colors (cached) ─────────────────────────────────────────────────────
+        // Colors (cached) 
         private static readonly Color ColorSuccess = new Color(0.4f, 1.0f, 0.5f);
         private static readonly Color ColorFailBg  = new Color(1.0f, 0.85f, 0.85f);
         private static readonly Color ColorFailText = new Color(1.0f, 0.4f, 0.4f);
         private static readonly Color ColorSelected = new Color(0.65f, 0.82f, 1.0f);
 
-        // ═════════════════════════════════════════════════════════════════════════
         [MenuItem("ToryAgent/Claude Editor")]
         public static void Open()
         {
@@ -97,7 +96,7 @@ namespace ToryAgent.UnityPlugin.Editor
 
         private void OnLogUpdated() => EditorApplication.delayCall += Repaint;
 
-        // ─── Top-level GUI ────────────────────────────────────────────────────────
+        // Top-level GUI 
         private void OnGUI()
         {
             DrawTabBar();
@@ -130,10 +129,8 @@ namespace ToryAgent.UnityPlugin.Editor
             }
         }
 
-        // ═════════════════════════════════════════════════════════════════════════
-        // TAB 0 — PROMPT
-        // ═════════════════════════════════════════════════════════════════════════
-
+        // TAB 0 - PROMPT
+        
         private void DrawPromptTab()
         {
             // Settings
@@ -264,10 +261,7 @@ namespace ToryAgent.UnityPlugin.Editor
             }
         }
 
-        // ═════════════════════════════════════════════════════════════════════════
-        // TAB 1 — MCP TOOLS
-        // ═════════════════════════════════════════════════════════════════════════
-
+        // TAB 1 - MCP TOOLS
         private void DrawMcpToolsTab()
         {
             // Header row
@@ -443,10 +437,8 @@ namespace ToryAgent.UnityPlugin.Editor
             }
         }
 
-        // ═════════════════════════════════════════════════════════════════════════
-        // TAB 2 — LOG VIEWER
-        // ═════════════════════════════════════════════════════════════════════════
-
+        // TAB 2 - LOG VIEWER
+        
         private void DrawLogTab()
         {
             var entries = McpBridgeLog.Entries;
@@ -536,10 +528,7 @@ namespace ToryAgent.UnityPlugin.Editor
             }
         }
 
-        // ═════════════════════════════════════════════════════════════════════════
-        // TAB 3 — CUSTOM COMMANDS
-        // ═════════════════════════════════════════════════════════════════════════
-
+        // TAB 3 - CUSTOM COMMANDS
         private void DrawCommandsTab()
         {
             // Header
@@ -626,7 +615,7 @@ namespace ToryAgent.UnityPlugin.Editor
                         EditorGUILayout.LabelField(cmd.Name, EditorStyles.boldLabel,
                             GUILayout.ExpandWidth(true));
 
-                        // Run — sends to Prompt tab immediately
+                        // Run ??sends to Prompt tab immediately
                         GUI.enabled = !_isSending && _settings != null;
                         if (GUILayout.Button("Run", GUILayout.Width(40)))
                         {
@@ -682,10 +671,7 @@ namespace ToryAgent.UnityPlugin.Editor
             EditorGUILayout.EndScrollView();
         }
 
-        // ═════════════════════════════════════════════════════════════════════════
         // HELPERS
-        // ═════════════════════════════════════════════════════════════════════════
-
         private static ClaudeEditorSettings FindSettings()
         {
             var guids = AssetDatabase.FindAssets("t:ClaudeEditorSettings");
@@ -748,3 +734,5 @@ namespace ToryAgent.UnityPlugin.Editor
         }
     }
 }
+
+

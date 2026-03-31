@@ -7,16 +7,6 @@ namespace TST
     public enum UIList
     {
         UI_PANEL_START,
-
-        Minimap_UI,
-        CrossHair_UI,
-        LoadingUI,
-        TitleUI,
-        IngameUI,
-        MainHudUI,
-        ShortCutUI,
-        IdleHudUI,
-
         // Starry Night panels
         MainLayout,
         HUD_Parameters,
@@ -37,15 +27,6 @@ namespace TST
 
         UI_PANEL_END,
         UI_POPUP_START,
-
-        GardenShopUI,
-        GardenInventoryUI,
-        GardenScorePanelUI,
-        CheatUI,
-        BuildingShopUI,
-        BuildingInfoPanelUI,
-        OfflineRewardUI,
-
         // Starry Night popups
         Popup_Inventory,
         Popup_ObservationJournal,

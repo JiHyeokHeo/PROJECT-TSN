@@ -37,7 +37,8 @@ namespace TST
         // ----------------------------------------------------------------
         //  Runtime state
         // ----------------------------------------------------------------
-        private Dictionary<TelescopePartType, int> _levels = new Dictionary<TelescopePartType, int>();
+        [SerializeField]
+        private SerializableWrapDictionary<TelescopePartType, int> _levels = new SerializableWrapDictionary<TelescopePartType, int>();
 
         // ----------------------------------------------------------------
         //  Initialization

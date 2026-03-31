@@ -40,6 +40,9 @@ namespace TST
         // ObservationJournal
         public ObservationRecordData[] journalRecords;
         public ObservationRecordData[] pendingRecords;
+
+        // PhaseManager
+        public int currentPhase;    // GamePhase enum -> int
     }
 
     // ----------------------------------------------------------------
@@ -49,6 +52,9 @@ namespace TST
     {
         public const int SLOT_COUNT            = 3;
         private const int TELESCOPE_PART_COUNT = 7; // TelescopePartType enum member count
+
+        /// <summary>이번 세션에서 마지막으로 저장/로드한 슬롯. -1 = 아직 없음.</summary>
+        public int LastUsedSlot { get; private set; } = -1;
 
         // ----------------------------------------------------------------
         //  File path helpers
@@ -75,6 +81,7 @@ namespace TST
                 SaveData data = BuildSaveData(slotIndex);
                 string json   = JsonUtility.ToJson(data, prettyPrint: true);
                 File.WriteAllText(SlotPath(slotIndex), json);
+                LastUsedSlot = slotIndex;
                 Debug.LogFormat("[SaveSystem] Slot {0} saved (Day {1}).", slotIndex, data.currentDay);
                 return true;
             }
@@ -105,6 +112,7 @@ namespace TST
                 string   json = File.ReadAllText(path);
                 SaveData data = JsonUtility.FromJson<SaveData>(json);
                 ApplySaveData(data);
+                LastUsedSlot = slotIndex;
                 Debug.LogFormat("[SaveSystem] Slot {0} loaded (Day {1}).", slotIndex, data.currentDay);
                 return true;
             }
@@ -201,7 +209,9 @@ namespace TST
                 telescopeLevels   = telescopeLevels,
 
                 journalRecords    = ConvertRecords(allRecords),
-                pendingRecords    = ConvertRecords(pendingRecords)
+                pendingRecords    = ConvertRecords(pendingRecords),
+
+                currentPhase      = (int)pm.CurrentPhase
             };
         }
 
@@ -243,8 +253,9 @@ namespace TST
             };
             oj.FromSaveData(journalSave);
 
-            // PhaseManager — restore day count via ForceSetDay
+            // PhaseManager — 날짜와 페이즈 복원 (이벤트 미발동)
             PhaseManager.Singleton.ForceSetDay(data.currentDay);
+            PhaseManager.Singleton.ForceSetPhase((GamePhase)data.currentPhase);
         }
 
         // ----------------------------------------------------------------
