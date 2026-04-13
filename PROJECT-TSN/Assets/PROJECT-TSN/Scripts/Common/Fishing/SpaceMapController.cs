@@ -23,6 +23,9 @@ namespace TST
         [Tooltip("각 ObservationZone에 대응하는 ZoneButton 컴포넌트 목록. zones와 같은 순서로 연결하세요.")]
         [SerializeField] private List<ZoneButton> zoneButtons = new List<ZoneButton>();
 
+        [Header("Dependencies")]
+        [SerializeField] private FishingTransitionController fishingTransitionController;
+
         // ── 생명주기 ─────────────────────────────────────────────────
 
         private void OnEnable()
@@ -54,6 +57,9 @@ namespace TST
             }
 
             OnZoneSelected?.Invoke(zone);
+
+            // Space → Fishing 전환 시작
+            fishingTransitionController?.BeginFishingTransition(zone);
         }
 
         /// <summary>현재 등록된 구역 목록을 반환합니다.</summary>

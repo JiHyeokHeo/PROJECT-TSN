@@ -22,6 +22,8 @@ namespace TST
     /// </summary>
     public class UniversityController : UIBase
     {
+        private void Awake() { isVisibleCursor = true; }
+
         // ----------------------------------------------------------------
         //  Inspector
         // ----------------------------------------------------------------

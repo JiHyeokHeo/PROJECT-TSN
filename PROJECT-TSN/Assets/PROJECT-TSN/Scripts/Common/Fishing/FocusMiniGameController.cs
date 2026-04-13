@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TST
 {
@@ -21,12 +22,29 @@ namespace TST
     /// </summary>
     public class FocusMiniGameController : SingletonBase<FocusMiniGameController>
     {
+        // ── 아크 상수 ────────────────────────────────────────────────
+        /// <summary>포인터 Z rotation 최대값 (시작 끝)</summary>
+        public const float ARC_MAX_DEG   =  90f;
+        /// <summary>포인터 Z rotation 최소값 (반대 끝)</summary>
+        public const float ARC_MIN_DEG   = -40f;
+        public const float ARC_RANGE_DEG = ARC_MAX_DEG - ARC_MIN_DEG; // 130°
+
+        // ── GreenCenter 랜덤 범위 ────────────────────────────────────
+        private const float GREEN_CENTER_MIN = 72f;
+        private const float GREEN_CENTER_MAX = -30f;
+
+        // ── 판정 상수 ────────────────────────────────────────────────
+        private const float HIT_HALF_DEG = 12f;
+
         // ── 열거형 ────────────────────────────────────────────────────
         public enum MiniGameState { Idle, Active, Success, Fail }
 
         // ── 이벤트 ────────────────────────────────────────────────────
         /// <summary>미니게임 완료 시 (success, 생성된 레코드 또는 null) 발행됩니다.</summary>
         public event Action<bool, ObservationRecord> OnMiniGameCompleted;
+
+        /// <summary>미니게임 취소 시 발행됩니다. FishingGround는 소멸하지 않습니다.</summary>
+        public event Action OnMiniGameCancelled;
 
         // ── 스크롤 그래프 설정 ───────────────────────────────────────
         [Header("Scroll Graph")]
@@ -69,29 +87,29 @@ namespace TST
 
         // ── 포인터(원호형 바) 설정 ───────────────────────────────────
         [Header("Pointer (Arc Bar)")]
-        [Tooltip("포인터의 좌우 왕복 속도 (정규화 좌표 단위/초)")]
-        [SerializeField] private float pointerSpeed = 0.6f;
+        [Tooltip("포인터의 좌우 왕복 속도 (도(°)/초)")]
+        [SerializeField] private float pointerSpeed = 78f;
 
         [Header("GreenZone Settings")]
-        [Tooltip("기본 GreenZone 너비 (정규화 0~1). 핸들 레벨 및 Rarity에 따라 조정됩니다.")]
-        [SerializeField] private float baseGreenZoneWidth = 0.20f;
+        [Tooltip("기본 GreenZone 시각 너비 (도, °). 핸들 레벨 및 Rarity에 따라 조정됩니다.")]
+        [SerializeField] private float baseGreenZoneWidth = 26f;
 
-        [Tooltip("핸들 레벨당 GreenZone 너비 증가량")]
-        [SerializeField] private float greenZoneWidthPerLevel = 0.04f;
+        [Tooltip("핸들 레벨당 GreenZone 시각 너비 증가량 (도)")]
+        [SerializeField] private float greenZoneWidthPerLevel = 5.2f;
 
-        [Tooltip("GreenZone 중심 랜덤 배치 가능 범위 (min, max). 0~1 정규화.")]
-        [SerializeField, Range(0f, 0.5f)] private float greenZoneMargin = 0.15f;
+        [Tooltip("GreenZone 중심 랜덤 배치 여백 (도)")]
+        [SerializeField] private float greenZoneMargin = 20f;
 
         // ── 프로퍼티 ─────────────────────────────────────────────────
         public MiniGameState State             { get; private set; } = MiniGameState.Idle;
 
-        /// <summary>포인터의 현재 정규화 위치 (0 = 왼쪽 끝, 1 = 오른쪽 끝).</summary>
+        /// <summary>포인터의 현재 Z rotation 각도 (ARC_MIN_DEG ~ ARC_MAX_DEG).</summary>
         public float         PointerPos        { get; private set; }
 
-        /// <summary>현재 GreenZone의 중심 위치 (정규화).</summary>
+        /// <summary>현재 GreenZone 중심의 Z rotation 각도 (GREEN_CENTER_MIN ~ GREEN_CENTER_MAX).</summary>
         public float         GreenCenter       { get; private set; }
 
-        /// <summary>현재 GreenZone의 너비 (정규화).</summary>
+        /// <summary>현재 GreenZone의 시각 너비 (도, °).</summary>
         public float         GreenWidth        { get; private set; }
 
         /// <summary>세로 스크롤 그래프의 현재 값 (0~1).</summary>
@@ -100,11 +118,14 @@ namespace TST
         /// <summary>성공 영역 하한선 (0~1).</summary>
         public float         SuccessThreshold  => successThreshold;
 
+        /// <summary>현재 미니게임의 천체 실루엣 아이콘 (FishingGround에서 설정).</summary>
+        public UnityEngine.Sprite CelestialIcon { get; private set; }
+
         // ── 런타임 상태 ──────────────────────────────────────────────
-        private SignalPoint     _currentPoint;
-        private ObservationZone _pendingZoneOverride;
-        private int             _pointerDirection = 1;
-        private float           _activeScrollSpeed;
+        private SignalPoint     currentPoint;
+        private ObservationZone pendingZoneOverride;
+        private int             pointerDirection = 1;
+        private float           activeScrollSpeed;
 
         // ── 공개 API ─────────────────────────────────────────────────
 
@@ -112,7 +133,8 @@ namespace TST
         /// ObservationZone 기반으로 미니게임을 시작합니다.
         /// FishingGround 등 SignalPoint 없이 zone만 알고 있는 경우에 사용합니다.
         /// </summary>
-        public void StartMinigame(ObservationZone zone)
+        /// <param name="icon">낚아올릴 천체의 실루엣 스프라이트 (null 허용).</param>
+        public void StartMinigame(ObservationZone zone, UnityEngine.Sprite icon = null)
         {
             if (zone == null)
             {
@@ -120,7 +142,8 @@ namespace TST
                 return;
             }
 
-            _pendingZoneOverride = zone;
+            CelestialIcon        = icon;
+            pendingZoneOverride = zone;
             StartMinigame(point: null);
         }
 
@@ -133,29 +156,49 @@ namespace TST
                 return;
             }
 
-            _currentPoint     = point;
-            PointerPos        = 0f;
-            _pointerDirection = 1;
+            currentPoint     = point;
+            PointerPos       = ARC_MAX_DEG;  // 90°에서 시작
+            pointerDirection = -1;           // -40° 방향으로 출발
             ScrollGraphValue  = initialGraphValue;
 
             // zone으로부터 Rarity를 미리 샘플해서 난이도 배율 결정
-            ObservationZone resolvedZone = _pendingZoneOverride
+            ObservationZone resolvedZone = pendingZoneOverride
                                           ?? (point != null ? point.Zone : null);
 
             Rarity previewRarity = SampleRarityForDifficulty(resolvedZone);
             ApplyDifficultyByRarity(previewRarity);
 
-            // 핸들 레벨 + Rarity 배율 적용 GreenZone 너비
+            // 핸들 레벨 + Rarity 배율 적용 GreenZone 시각 너비 (도)
             int handleLevel = TelescopeData.Singleton.GetLevel(TelescopePartType.Handle);
-            float baseWidth = Mathf.Clamp01(baseGreenZoneWidth + handleLevel * greenZoneWidthPerLevel);
-            GreenWidth = Mathf.Clamp(baseWidth * GetZoneMultByRarity(previewRarity), 0.05f, 0.8f);
+            float baseWidth = baseGreenZoneWidth + handleLevel * greenZoneWidthPerLevel;
+            GreenWidth = Mathf.Clamp(baseWidth * GetZoneMultByRarity(previewRarity), 6.5f, 104f);
 
             RandomizeGreenCenter();
 
             State = MiniGameState.Active;
 
             UIManager.Show<UIBase>(UIList.Popup_FocusMinigame);
-            InputSystem.Singleton.OnInput_Shoot += OnClickAttempt;
+        }
+
+        // ── 공개 취소 API ────────────────────────────────────────────
+
+        /// <summary>
+        /// 미니게임을 취소합니다. UI가 닫히고 FishingGround는 소멸하지 않습니다.
+        /// OnMiniGameCompleted 이벤트는 발행되지 않고, OnMiniGameCancelled가 발행됩니다.
+        /// </summary>
+        public void CancelMinigame()
+        {
+            if (State != MiniGameState.Active) return;
+
+            UIManager.Hide<UIBase>(UIList.Popup_FocusMinigame);
+
+            State                = MiniGameState.Idle;
+            currentPoint        = null;
+            pendingZoneOverride = null;
+            CelestialIcon        = null;
+
+            Debug.Log("[FocusMiniGameController] 미니게임 취소 — FishingGround 유지.");
+            OnMiniGameCancelled?.Invoke();
         }
 
         // ── Unity 생명주기 ───────────────────────────────────────────
@@ -164,8 +207,26 @@ namespace TST
         {
             if (State != MiniGameState.Active) return;
 
+            var mouse = Mouse.current;
+            var kb    = Keyboard.current;
+
+            // M2(마우스 우클릭) 또는 Esc 입력 시 취소
+            bool cancelInput = (mouse != null && mouse.rightButton.wasPressedThisFrame)
+                             || (kb    != null && kb.escapeKey.wasPressedThisFrame);
+            if (cancelInput)
+            {
+                CancelMinigame();
+                return;
+            }
+
+            // 마우스 좌클릭 시 OnClickAttempt 실행
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+            {
+                OnClickAttempt();
+            }
+
             // 세로 스크롤 그래프 — 매 프레임 아래로 이동
-            ScrollGraphValue -= _activeScrollSpeed * Time.deltaTime;
+            ScrollGraphValue -= activeScrollSpeed * Time.deltaTime;
 
             // 종료 조건 검사
             if (ScrollGraphValue <= 0f)
@@ -181,18 +242,18 @@ namespace TST
                 return;
             }
 
-            // 원호형 바 포인터 이동
-            PointerPos += _pointerDirection * pointerSpeed * Time.deltaTime;
+            // 원호형 바 포인터 이동 (도/초), 90° ↔ -40° 왕복
+            PointerPos += pointerDirection * pointerSpeed * Time.deltaTime;
 
-            if (PointerPos >= 1f)
+            if (PointerPos >= ARC_MAX_DEG)
             {
-                PointerPos        = 1f;
-                _pointerDirection = -1;
+                PointerPos       = ARC_MAX_DEG;
+                pointerDirection = -1;
             }
-            else if (PointerPos <= 0f)
+            else if (PointerPos <= ARC_MIN_DEG)
             {
-                PointerPos        = 0f;
-                _pointerDirection = 1;
+                PointerPos       = ARC_MIN_DEG;
+                pointerDirection = 1;
             }
         }
 
@@ -202,9 +263,7 @@ namespace TST
         {
             if (State != MiniGameState.Active) return;
 
-            float halfWidth = GreenWidth * 0.5f;
-            bool hitGreen   = PointerPos >= (GreenCenter - halfWidth)
-                              && PointerPos <= (GreenCenter + halfWidth);
+            bool hitGreen = Mathf.Abs(PointerPos - GreenCenter) <= HIT_HALF_DEG;
 
             if (hitGreen)
             {
@@ -238,12 +297,10 @@ namespace TST
         {
             State = success ? MiniGameState.Success : MiniGameState.Fail;
 
-            InputSystem.Singleton.OnInput_Shoot -= OnClickAttempt;
-
             ObservationRecord record = null;
 
-            ObservationZone resolvedZone = _pendingZoneOverride
-                                          ?? (_currentPoint != null ? _currentPoint.Zone : null);
+            ObservationZone resolvedZone = pendingZoneOverride
+                                          ?? (currentPoint != null ? currentPoint.Zone : null);
 
             if (success && resolvedZone != null)
             {
@@ -261,30 +318,21 @@ namespace TST
             UIManager.Hide<UIBase>(UIList.Popup_FocusMinigame);
 
             State                = MiniGameState.Idle;
-            _currentPoint        = null;
-            _pendingZoneOverride = null;
+            currentPoint        = null;
+            pendingZoneOverride = null;
+            CelestialIcon        = null;
         }
 
-        /// <summary>GreenZone 중심을 margin 범위를 고려해 랜덤으로 재배치합니다.</summary>
+        /// <summary>GreenZone 중심을 -72° ~ 30° 사이에서 랜덤으로 재배치합니다.</summary>
         private void RandomizeGreenCenter()
         {
-            float half  = GreenWidth * 0.5f;
-            float lower = Mathf.Clamp(half + greenZoneMargin, 0f, 1f);
-            float upper = Mathf.Clamp(1f - half - greenZoneMargin, 0f, 1f);
-
-            if (lower >= upper)
-            {
-                GreenCenter = 0.5f;
-                return;
-            }
-
-            GreenCenter = UnityEngine.Random.Range(lower, upper);
+            GreenCenter = UnityEngine.Random.Range(GREEN_CENTER_MIN, GREEN_CENTER_MAX);
         }
 
         /// <summary>Rarity에 따른 scrollSpeed 배율과 greenZone 배율을 적용합니다.</summary>
         private void ApplyDifficultyByRarity(Rarity rarity)
         {
-            _activeScrollSpeed = baseScrollSpeed * GetScrollMultByRarity(rarity);
+            activeScrollSpeed = baseScrollSpeed * GetScrollMultByRarity(rarity);
         }
 
         private float GetScrollMultByRarity(Rarity rarity)

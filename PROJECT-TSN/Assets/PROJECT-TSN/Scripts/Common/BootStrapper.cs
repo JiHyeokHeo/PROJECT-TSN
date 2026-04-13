@@ -20,7 +20,7 @@ namespace TST
             UIManager.Singleton.Initialize();
             SoundManager.Singleton.Initialize();
 
-            UIManager.Show<TitleUI>(UIList.Panel_Title);
+            //UIManager.Show<TitleUI>(UIList.Panel_Title);
         }
     }
 }

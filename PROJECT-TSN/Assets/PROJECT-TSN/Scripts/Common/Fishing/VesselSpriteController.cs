@@ -14,6 +14,9 @@ namespace TST
     public class VesselSpriteController : MonoBehaviour
     {
         // ── 설정 ─────────────────────────────────────────────────────
+        [Header("Dependencies")]
+        [SerializeField] private VesselController vesselController;
+
         [Header("8-Direction Sprites")]
         [Tooltip("N / NE / E / SE / S / SW / W / NW 순서로 8개 스프라이트를 연결하세요.")]
         [SerializeField] private Sprite[] directionSprites = new Sprite[8];
@@ -29,9 +32,9 @@ namespace TST
 
         private void LateUpdate()
         {
-            if (VesselController.Singleton == null) return;
+            if (vesselController == null) return;
 
-            int dirIndex = AngleToDirectionIndex(VesselController.Singleton.FacingAngle);
+            int dirIndex = AngleToDirectionIndex(vesselController.FacingAngle);
             if (dirIndex == _lastDirIndex) return;
 
             _lastDirIndex = dirIndex;

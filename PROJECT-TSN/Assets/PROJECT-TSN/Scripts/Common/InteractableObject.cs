@@ -74,6 +74,20 @@ namespace TST
             OnInteract();
         }
 
+        public void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!isInteractable) return;
+            OnInteracted?.Invoke();
+            OnInteract();
+        }
+
+        public void OnTriggerStay2D(Collider2D other)
+        {
+            if (!isInteractable) return;
+            OnInteracted?.Invoke();
+            OnInteract();
+        }
+
         //private void OnMouseEnter()
         //{
         //    if (!isInteractable) return;

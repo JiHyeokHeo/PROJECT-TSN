@@ -8,7 +8,7 @@ namespace TST
     /// 위험 요소 충돌로 감소, 기록 보관소 상호작용으로 회복됩니다.
     /// 내구도 0 도달 시 FishingPhaseController.EndFishing()을 통해 침몰 처리합니다.
     /// </summary>
-    public class VesselHull : SingletonBase<VesselHull>
+    public class VesselHull : MonoBehaviour
     {
         // ── 설정 ─────────────────────────────────────────────────────
         [Header("Durability")]
@@ -17,6 +17,10 @@ namespace TST
 
         [Tooltip("낚시 세션 시작 시 내구도를 최대치로 초기화할지 여부")]
         [SerializeField] private bool resetOnSessionStart = true;
+
+        [Header("Dependencies")]
+        [SerializeField] private VesselController vesselController;
+        [SerializeField] private FishingPhaseController fishingPhaseController;
 
         // ── 이벤트 ───────────────────────────────────────────────────
         /// <summary>내구도가 변경될 때마다 현재 값을 전달합니다 (0~maxDurability).</summary>
@@ -37,9 +41,8 @@ namespace TST
 
         // ─────────────────────────────────────────────────────────────
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             CurrentDurability = maxDurability;
         }
 
@@ -92,12 +95,38 @@ namespace TST
             OnSunk?.Invoke();
 
             // 관측선을 즉시 정지
-            VesselController.Singleton?.ForceStop();
+            vesselController?.ForceStop();
+
+            // ── 침몰 패널티 ──────────────────────────────────────────
+
+            // 1. 미보관 관측 기록 소실
+            ObservationJournal.Singleton?.ClearHeldRecords();
+
+            // 2. 이성 현재값의 10% 감소 (소수점 버림)
+            PlayerParameters pp = PlayerParameters.Singleton;
+            if (pp != null)
+            {
+                int sanityPenalty = Mathf.FloorToInt(pp.Sanity * 0.1f);
+                if (sanityPenalty > 0)
+                {
+                    pp.AddSanity(-sanityPenalty);
+                    Debug.LogFormat("[VesselHull] 이성 -{0} (침몰 패널티).", sanityPenalty);
+                }
+
+                // 3. 광기 현재값의 10% 상승 (소수점 버림)
+                int madnessPenalty = Mathf.FloorToInt(pp.Madness * 0.1f);
+                if (madnessPenalty > 0)
+                {
+                    pp.AddMadness(madnessPenalty);
+                    Debug.LogFormat("[VesselHull] 광기 +{0} (침몰 패널티).", madnessPenalty);
+                }
+            }
+
+            // ─────────────────────────────────────────────────────────
 
             // 낚시 페이즈 종료 (침몰 = 강제 종료와 동일 경로)
-            FishingPhaseController fc = FishingPhaseController.Singleton;
-            if (fc != null && fc.IsActive)
-                fc.EndFishing();
+            if (fishingPhaseController != null && fishingPhaseController.IsActive)
+                fishingPhaseController.EndFishing();
         }
     }
 }

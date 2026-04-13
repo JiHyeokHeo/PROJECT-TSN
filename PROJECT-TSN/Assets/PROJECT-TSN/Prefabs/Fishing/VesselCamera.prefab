@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2144259515827752339}
   - component: {fileID: 2533420273103927056}
   - component: {fileID: 5185615382183598671}
-  - component: {fileID: 3697234183589595745}
+  - component: {fileID: -8316858171832866980}
   m_Layer: 0
   m_Name: VesselCamera
   m_TagString: Untagged
@@ -97,13 +97,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e868c157b48459240987d3d468f9ddf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TST.VesselCameraController
+  vessel: {fileID: 0}
   followSpeed: 8
   pitchAngle: 45
   height: 12
   depth: 12
   viewportFrame: {fileID: 0}
   displayImage: {fileID: 0}
---- !u!114 &3697234183589595745
+--- !u!114 &-8316858171832866980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

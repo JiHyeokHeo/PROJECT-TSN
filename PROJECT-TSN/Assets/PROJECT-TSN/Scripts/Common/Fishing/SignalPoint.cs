@@ -15,6 +15,11 @@ namespace TST
         [Tooltip("기본 발견 보너스 배율 (1.0 = 보너스 없음)")]
         [SerializeField] private float baseDiscoveryBonus = 1.0f;
 
+        [Header("Dependencies")]
+        [SerializeField] private FishingPhaseController  fishingPhaseController;
+        [SerializeField] private VesselController        vesselController;
+        [SerializeField] private FocusMiniGameController focusMiniGameController;
+
         // ── 런타임 상태 ──────────────────────────────────────────────
         public bool IsInteracted { get; private set; } = false;
 
@@ -48,13 +53,13 @@ namespace TST
             if (IsInteracted) return;
 
             // 낚시 세션이 활성 상태일 때만 반응
-            if (!FishingPhaseController.Singleton.IsActive) return;
+            if (fishingPhaseController == null || !fishingPhaseController.IsActive) return;
 
             // 정선 상태일 때만 상호작용 가능
-            if (VesselController.Singleton == null || !VesselController.Singleton.IsStationary) return;
+            if (vesselController == null || !vesselController.IsStationary) return;
 
             IsInteracted = true;
-            FocusMiniGameController.Singleton.StartMinigame(this);
+            focusMiniGameController?.StartMinigame(this);
 
             // 스프라이트 페이드 등 시각 처리는 필요 시 여기서 추가
             gameObject.SetActive(false);

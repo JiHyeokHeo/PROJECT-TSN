@@ -139,15 +139,17 @@ namespace TST
         [Serializable]
         public class JournalSaveData
         {
-            public List<ObservationRecord> allRecords    = new List<ObservationRecord>();
-            public List<ObservationRecord> pendingRecords = new List<ObservationRecord>();
+            public List<ObservationRecord> allRecords      = new List<ObservationRecord>();
+            public List<ObservationRecord> pendingRecords  = new List<ObservationRecord>();
+            public List<ObservationRecord> archivedRecords = new List<ObservationRecord>();
         }
 
         // ----------------------------------------------------------------
         //  Runtime state
         // ----------------------------------------------------------------
-        private List<ObservationRecord> _allRecords     = new List<ObservationRecord>();
-        private List<ObservationRecord> _pendingRecords = new List<ObservationRecord>();
+        private List<ObservationRecord> _allRecords      = new List<ObservationRecord>();
+        private List<ObservationRecord> _pendingRecords  = new List<ObservationRecord>();
+        private List<ObservationRecord> _archivedRecords = new List<ObservationRecord>();
 
         // ----------------------------------------------------------------
         //  Properties
@@ -186,6 +188,26 @@ namespace TST
             return new List<ObservationRecord>(_pendingRecords);
         }
 
+        public List<ObservationRecord> GetArchivedRecords()
+        {
+            return new List<ObservationRecord>(_archivedRecords);
+        }
+
+        /// <summary>pending 기록 전체를 archived로 이동합니다. RecordArchive 상호작용 시 호출하십시오.</summary>
+        public void ArchivePendingRecords()
+        {
+            foreach (var r in _pendingRecords)
+            {
+                r.isDiscoveredThisNight = false;
+                _archivedRecords.Add(r);
+            }
+
+            int count = _pendingRecords.Count;
+            _pendingRecords.Clear();
+
+            Debug.LogFormat("[ObservationJournal] ArchivePendingRecords — {0}개 기록 보관 완료.", count);
+        }
+
         public DisposeResult DisposePendingRecord(string id, DisposalMethod method)
         {
             ObservationRecord target = _pendingRecords.Find(r => r.id == id);
@@ -219,6 +241,26 @@ namespace TST
             _pendingRecords.Clear();
         }
 
+        /// <summary>
+        /// 미보관(pending) 기록을 전체 기록 목록에서도 제거합니다.
+        /// 관측선 침몰 패널티 — 보관되지 않은 관측 기록 소실 시 호출하십시오.
+        /// 이미 처리(보관)된 기록은 영향을 받지 않습니다.
+        /// </summary>
+        public void ClearHeldRecords()
+        {
+            if (_pendingRecords.Count == 0) return;
+
+            foreach (var r in _pendingRecords)
+            {
+                _allRecords.Remove(r);
+            }
+
+            int lost = _pendingRecords.Count;
+            _pendingRecords.Clear();
+
+            Debug.LogFormat("[ObservationJournal] 침몰 패널티 — 미보관 기록 {0}개 소실.", lost);
+        }
+
         // ----------------------------------------------------------------
         //  Persistence
         // ----------------------------------------------------------------
@@ -226,16 +268,18 @@ namespace TST
         {
             return new JournalSaveData
             {
-                allRecords     = new List<ObservationRecord>(_allRecords),
-                pendingRecords = new List<ObservationRecord>(_pendingRecords)
+                allRecords      = new List<ObservationRecord>(_allRecords),
+                pendingRecords  = new List<ObservationRecord>(_pendingRecords),
+                archivedRecords = new List<ObservationRecord>(_archivedRecords)
             };
         }
 
         public void FromSaveData(JournalSaveData data)
         {
             if (data == null) return;
-            _allRecords     = data.allRecords     ?? new List<ObservationRecord>();
-            _pendingRecords = data.pendingRecords ?? new List<ObservationRecord>();
+            _allRecords      = data.allRecords      ?? new List<ObservationRecord>();
+            _pendingRecords  = data.pendingRecords  ?? new List<ObservationRecord>();
+            _archivedRecords = data.archivedRecords ?? new List<ObservationRecord>();
         }
 
         public void Save()

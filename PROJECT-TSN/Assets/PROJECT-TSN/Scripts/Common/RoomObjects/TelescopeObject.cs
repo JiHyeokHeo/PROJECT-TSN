@@ -8,6 +8,8 @@ namespace TST
     /// </summary>
     public class TelescopeObject : InteractableObject
     {
+        [Header("Dependencies")]
+        [SerializeField] private FishingTransitionController fishingTransitionController;
         protected override void Awake()
         {
             base.Awake();
@@ -15,6 +17,18 @@ namespace TST
         }
 
         private void OnDestroy()
+        {
+            if (PhaseManager.Singleton != null)
+                PhaseManager.Singleton.OnPhaseChanged -= HandlePhaseChanged;
+        }
+
+        // ----------------------------------------------------------------
+        private void OnEnable()
+        {
+            PhaseManager.Singleton.OnPhaseChanged += HandlePhaseChanged;
+        }
+
+        private void OnDisable()
         {
             if (PhaseManager.Singleton != null)
                 PhaseManager.Singleton.OnPhaseChanged -= HandlePhaseChanged;
@@ -46,8 +60,8 @@ namespace TST
                     break;
                 case GamePhase.NightA:
                 case GamePhase.NightB:
-                    // 밤 망원경 팝업: 낚시 진입(NightA) / 엔딩 선택지 제공
-                    UIManager.Show<NightTelescopePopupUI>(UIList.Popup_NightTelescope);
+                    UIManager.Show<NightTelescopePopupUI>(UIList.Popup_NightTelescope)
+                             ?.Initialize(fishingTransitionController);
                     break;
             }
         }

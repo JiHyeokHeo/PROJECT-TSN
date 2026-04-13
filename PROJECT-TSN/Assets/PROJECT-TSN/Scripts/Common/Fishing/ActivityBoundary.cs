@@ -54,8 +54,14 @@ namespace TST
         [SerializeField] private float sinkDamage = 100f;
 
         [Header("References")]
-        [Tooltip("관측선 Transform. 비워두면 VesselController.Singleton 자동 참조.")]
+        [Tooltip("관측선 Transform. 비워두면 VesselController 참조에서 자동 설정.")]
         [SerializeField] private Transform vesselTransform;
+
+        [Tooltip("VesselController. vesselTransform이 비어 있을 때 transform을 자동 참조합니다.")]
+        [SerializeField] private VesselController vesselController;
+
+        [SerializeField] private VesselHull             vesselHull;
+        [SerializeField] private FishingPhaseController fishingPhaseController;
 
         // ── 프로퍼티 ─────────────────────────────────────────────────
 
@@ -79,8 +85,8 @@ namespace TST
 
         private void Awake()
         {
-            if (vesselTransform == null && VesselController.Singleton != null)
-                vesselTransform = VesselController.Singleton.transform;
+            if (vesselTransform == null && vesselController != null)
+                vesselTransform = vesselController.transform;
         }
 
         private void Update()
@@ -88,7 +94,7 @@ namespace TST
             if (vesselTransform == null) return;
 
             // 낚시 세션이 활성 상태일 때만 동작
-            if (FishingPhaseController.Singleton == null || !FishingPhaseController.Singleton.IsActive)
+            if (fishingPhaseController == null || !fishingPhaseController.IsActive)
             {
                 if (IsOutOfBounds) ExitBoundary();
                 return;
@@ -178,10 +184,10 @@ namespace TST
             _sinkDealt = true;
             Debug.LogWarning($"[ActivityBoundary] 복귀 시간 초과 — VesselHull에 피해 {sinkDamage} 적용.");
 
-            if (VesselHull.Singleton != null)
-                VesselHull.Singleton.TakeDamage(sinkDamage);
+            if (vesselHull != null)
+                vesselHull.TakeDamage(sinkDamage);
             else
-                FishingPhaseController.Singleton?.EndFishing();
+                fishingPhaseController?.EndFishing();
         }
 
         private void BroadcastVignette(float value)

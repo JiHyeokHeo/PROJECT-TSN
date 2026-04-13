@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,13 @@ namespace TST
     /// </summary>
     public class VesselCameraController : MonoBehaviour
     {
+        // ── 싱글톤 ───────────────────────────────────────────────────
+        public static VesselCameraController Singleton { get; private set; }
+
         // ── 설정 ─────────────────────────────────────────────────────
+        [Header("Dependencies")]
+        [SerializeField] private VesselController vessel;
+
         [Header("Follow")]
         [Tooltip("카메라 추적 보간 속도 (높을수록 빠르게 따라감)")]
         [SerializeField] private float followSpeed = 8f;
@@ -46,8 +53,13 @@ namespace TST
         private Camera        _camera;
         private RenderTexture _renderTexture;
 
+        // ── 쉐이킹 상태 ──────────────────────────────────────────────
+        private Vector3    _shakeOffset;
+        private Coroutine  _shakeCoroutine;
+
         private void Awake()
         {
+            Singleton = this;
             _camera = GetComponent<Camera>();
             transform.rotation = Quaternion.Euler(pitchAngle, 0f, 0f);
         }
@@ -59,9 +71,9 @@ namespace TST
 
         private void LateUpdate()
         {
-            if (VesselController.Singleton == null) return;
+            if (vessel == null) return;
 
-            Vector3 vesselPos = VesselController.Singleton.transform.position;
+            Vector3 vesselPos = vessel.transform.position;
 
             // height 위, depth 뒤 (-Z) 에서 45° 로 내려다보는 위치
             Vector3 desiredPosition = vesselPos + new Vector3(0f, height, -depth);
@@ -69,14 +81,45 @@ namespace TST
             transform.position = Vector3.Lerp(
                 transform.position,
                 desiredPosition,
-                followSpeed * Time.deltaTime);
+                followSpeed * Time.deltaTime) + _shakeOffset;
 
             transform.rotation = Quaternion.Euler(pitchAngle, 0f, 0f);
         }
 
         private void OnDestroy()
         {
+            if (Singleton == this) Singleton = null;
             ReleaseRenderTexture();
+        }
+
+        // ── 카메라 쉐이킹 ────────────────────────────────────────────
+
+        /// <summary>
+        /// 카메라 쉐이킹을 시작합니다.
+        /// </summary>
+        /// <param name="duration">쉐이킹 지속 시간(초)</param>
+        /// <param name="magnitude">쉐이킹 강도 (기본값 0.3)</param>
+        public void ShakeCamera(float duration, float magnitude = 0.3f)
+        {
+            if (_shakeCoroutine != null)
+                StopCoroutine(_shakeCoroutine);
+
+            _shakeCoroutine = StartCoroutine(ShakeCameraRoutine(duration, magnitude));
+        }
+
+        private IEnumerator ShakeCameraRoutine(float duration, float magnitude)
+        {
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                _shakeOffset = Random.insideUnitSphere * magnitude;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            _shakeOffset    = Vector3.zero;
+            _shakeCoroutine = null;
         }
 
         // ── RenderTexture 설정 ────────────────────────────────────────

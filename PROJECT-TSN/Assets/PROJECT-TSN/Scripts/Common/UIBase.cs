@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace TST
 {
-    public class UIBase : MonoBehaviour
+    public abstract class UIBase : MonoBehaviour
     {
-        public virtual bool IsVisibleCursor { get; set; } = false;
+        protected bool isVisibleCursor = false;
+        public virtual bool IsVisibleCursor { get => isVisibleCursor; set => isVisibleCursor = value; }
 
         public virtual bool UseScreenSpaceCamera
         {

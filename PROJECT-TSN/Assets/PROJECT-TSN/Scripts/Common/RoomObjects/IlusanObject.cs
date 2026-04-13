@@ -8,8 +8,6 @@ namespace TST
     /// </summary>
     public class IlusanObject : InteractableObject
     {
-        private GamePhase _currentPhase = GamePhase.DayAttic;
-
         protected override void Awake()
         {
             base.Awake();
@@ -24,17 +22,13 @@ namespace TST
 
         private void HandlePhaseChanged(GamePhase oldPhase, GamePhase newPhase)
         {
-            _currentPhase = newPhase;
-
             switch (newPhase)
             {
                 case GamePhase.NightA:
                 case GamePhase.NightB:
-                    // 코즈믹 트레이스 보유 여부로 활성 여부 결정
                     IsInteractable = ObservationJournal.Singleton.HasCosmicTrace;
                     break;
                 default:
-                    // 낮 또는 기타 페이즈에서는 비활성
                     IsInteractable = false;
                     break;
             }
@@ -42,8 +36,8 @@ namespace TST
 
         protected override void OnInteract()
         {
-            // 이중 검증: 페이즈 진입 시점에 변경될 수 있으므로 재확인
-            if (_currentPhase != GamePhase.NightA && _currentPhase != GamePhase.NightB)
+            var phase = PhaseManager.Singleton.CurrentPhase;
+            if (phase != GamePhase.NightA && phase != GamePhase.NightB)
                 return;
 
             if (!ObservationJournal.Singleton.HasCosmicTrace)

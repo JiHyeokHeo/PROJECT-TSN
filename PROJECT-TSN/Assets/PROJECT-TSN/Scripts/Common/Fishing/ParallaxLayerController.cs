@@ -20,7 +20,7 @@ namespace TST
     ///   1. 씬에 빈 GameObject를 두고 이 컴포넌트를 추가합니다.
     ///   2. Inspector → Layers 배열에 각 레이어의 Transform과 parallaxFactor를 입력합니다.
     ///   3. Vessel Reference 필드에 VesselController를 보유한 Transform을 연결합니다.
-    ///      (비워 두면 VesselController.Singleton 을 Awake에서 자동 참조합니다.)
+    ///      (비워 두면 vesselController.transform 을 Awake에서 자동 참조합니다.)
     /// </summary>
     public class ParallaxLayerController : MonoBehaviour
     {
@@ -40,8 +40,11 @@ namespace TST
         // ── Inspector 필드 ────────────────────────────────────────────
 
         [Header("Vessel Reference")]
-        [Tooltip("이동 기준이 되는 관측선 Transform. 비어 있으면 VesselController.Singleton 자동 참조.")]
+        [Tooltip("이동 기준이 되는 관측선 Transform. 비어 있으면 vesselController.transform 자동 참조.")]
         [SerializeField] private Transform vesselTransform;
+
+        [Tooltip("VesselController. vesselTransform이 비어 있을 때 transform을 자동 참조합니다.")]
+        [SerializeField] private VesselController vesselController;
 
         [Header("Layers (뒤 → 앞 순서로 나열)")]
         [SerializeField] private ParallaxLayer[] layers;
@@ -54,8 +57,8 @@ namespace TST
 
         private void Awake()
         {
-            if (vesselTransform == null && VesselController.Singleton != null)
-                vesselTransform = VesselController.Singleton.transform;
+            if (vesselTransform == null && vesselController != null)
+                vesselTransform = vesselController.transform;
         }
 
         private void Start()

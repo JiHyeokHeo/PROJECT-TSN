@@ -26,6 +26,9 @@ namespace TST
     public class FishingTimerUI : UIBase, IPointerClickHandler
     {
         // ── 직렬화 필드 ──────────────────────────────────────────────
+        [Header("Dependencies")]
+        [SerializeField] private FishingPhaseController fishingPhaseController;
+
         [Header("Arc")]
         [Tooltip("원호 이미지. Image Type = Filled, Fill Method = Radial 360, Fill Origin = Top, Clockwise = true.")]
         [SerializeField] private Image arcImage;
@@ -56,14 +59,14 @@ namespace TST
 
         private void BindTimerEvent()
         {
-            if (FishingPhaseController.Singleton == null) return;
-            FishingPhaseController.Singleton.OnTimerUpdated += HandleTimerUpdated;
+            if (fishingPhaseController == null) return;
+            fishingPhaseController.OnTimerUpdated += HandleTimerUpdated;
         }
 
         private void UnbindTimerEvent()
         {
-            if (FishingPhaseController.Singleton == null) return;
-            FishingPhaseController.Singleton.OnTimerUpdated -= HandleTimerUpdated;
+            if (fishingPhaseController == null) return;
+            fishingPhaseController.OnTimerUpdated -= HandleTimerUpdated;
         }
 
         // ── 핸들러 ───────────────────────────────────────────────────
@@ -82,9 +85,9 @@ namespace TST
         /// </summary>
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (FishingPhaseController.Singleton == null) return;
-            if (!FishingPhaseController.Singleton.IsActive) return;
-            FishingPhaseController.Singleton.SkipFishing();
+            if (fishingPhaseController == null) return;
+            if (!fishingPhaseController.IsActive) return;
+            fishingPhaseController.SkipFishing();
         }
 
         // ── 내부 ─────────────────────────────────────────────────────
@@ -92,8 +95,8 @@ namespace TST
         /// <summary>Show() 시점에 현재 타이머 상태로 즉시 동기화.</summary>
         private void SyncTimer()
         {
-            if (FishingPhaseController.Singleton == null) return;
-            ApplyTimer(FishingPhaseController.Singleton.RemainingTime);
+            if (fishingPhaseController == null) return;
+            ApplyTimer(fishingPhaseController.RemainingTime);
         }
 
         /// <summary>
@@ -106,9 +109,9 @@ namespace TST
         /// </summary>
         private void ApplyTimer(float remainingTime)
         {
-            if (FishingPhaseController.Singleton == null) return;
+            if (fishingPhaseController == null) return;
 
-            float totalTime = FishingPhaseController.Singleton.TotalTime;
+            float totalTime = fishingPhaseController.TotalTime;
             if (totalTime <= 0f) return;
 
             float fillAmount = 1f - Mathf.Clamp01(remainingTime / totalTime);

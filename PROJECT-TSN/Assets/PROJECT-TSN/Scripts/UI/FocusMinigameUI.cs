@@ -5,32 +5,29 @@ namespace TST
 {
     /// <summary>
     /// 초점 맞추기 미니게임 팝업 UI.
-    /// FocusMiniGameController 의 상태(PointerPos, GreenCenter, GreenWidth, State)를
-    /// 매 프레임 읽어 arc 위에서 포인터·성공 구간을 표시합니다.
+    ///
+    /// [UI 구성]
+    ///   1. 아이콘 : 낚아올릴 천체 실루엣 (Image)
+    ///   2. 세로 스크롤 바 (Scroll Bar 1):
+    ///        - scrollBarBackground : 바 배경 RectTransform (기준 높이)
+    ///        - scrollKnobRect      : 노란 원형 손잡이 (ScrollGraphValue → 상하 위치)
+    ///        - successZoneRect     : 상단 녹색 성공 영역 (고정, SuccessThreshold 기준)
+    ///        - failZoneRect        : 하단 붉은 실패 영역 (고정)
+    ///   3. 원호형 바 (Scroll Bar 2):
+    ///        - greenZoneRect       : 초록색 성공 구간
+    ///        - pointerRect         : 파란 원형 포인터 (좌우 왕복)
+    ///   4. 결과 오버레이 (optional): 성공·실패 페이드 연출
     ///
     /// Inspector 와이어링:
-    ///   arcBarImage      — ArcBar (Image, Type = Filled, Fill Method = Radial 360)
-    ///   greenZoneImage   — GreenZone (Image, green)
-    ///   pointerImage     — Pointer (Image, white circle)
-    ///   resultOverlay    — 성공·실패 페이드용 반투명 오버레이 Image (optional)
-    ///
-    /// Arc 정의:
-    ///   ARC_START_DEG ~ ARC_END_DEG (시계 방향, UI 각도 기준)
-    ///   0.0 → ARC_START_DEG, 1.0 → ARC_END_DEG
+    ///   arcPivot       — ArcBar 중심 RectTransform
+    ///   arcRadius      — arc 반지름 (픽셀)
+    ///   scrollBarBackground — 세로 바 RectTransform (높이 기준으로 knob 위치 계산)
     /// </summary>
     public class FocusMinigameUI : UIBase
     {
-        // ── Arc 설정 ─────────────────────────────────────────────────────
-        /// <summary>arc 의 시작 각도 (도, 12시 = 0, 시계방향 양수).</summary>
-        private const float ARC_START_DEG = -140f;
+        // ── Arc 설정 — 포인터/그린존 모두 Z localRotation으로 제어 ─────────
 
-        /// <summary>arc 의 끝 각도.</summary>
-        private const float ARC_END_DEG = 140f;
-
-        /// <summary>arc 의 전체 각도 범위.</summary>
-        private const float ARC_RANGE_DEG = ARC_END_DEG - ARC_START_DEG; // 280
-
-        // ── 성공·실패 연출 ────────────────────────────────────────────
+        // ── 결과 연출 ────────────────────────────────────────────────
         private const float RESULT_FADE_IN_DURATION  = 0.15f;
         private const float RESULT_HOLD_DURATION     = 0.5f;
         private const float RESULT_FADE_OUT_DURATION = 0.3f;
@@ -39,111 +36,173 @@ namespace TST
         private static readonly Color COLOR_FAIL    = new Color(0.9f, 0.2f, 0.2f, 0.8f);
 
         // ── 직렬화 필드 ──────────────────────────────────────────────
-        [Header("Arc Elements")]
-        [Tooltip("GreenZone 이미지 (arc 위에 배치된 Image 컴포넌트)")]
+        [Header("Dependencies")]
+        [SerializeField] private FocusMiniGameController focusMiniGameController;
+
+        [Header("Icon")]
+        [Tooltip("낚아올릴 천체 실루엣을 표시하는 Image 컴포넌트")]
+        [SerializeField] private Image celestialIconImage;
+
+        [Header("Scroll Bar 1 — Vertical")]
+        [Tooltip("세로 바 배경 RectTransform (높이를 노브 이동 범위 계산에 사용)")]
+        [SerializeField] private RectTransform scrollBarBackground;
+
+        [Tooltip("노란 원형 손잡이 RectTransform. ScrollGraphValue(0=하단, 1=상단)로 이동")]
+        [SerializeField] private RectTransform scrollKnobRect;
+
+        [Tooltip("상단 녹색 성공 영역 RectTransform (SuccessThreshold 위치에 고정 배치)")]
+        [SerializeField] private RectTransform successZoneRect;
+
+        [Tooltip("하단 붉은 실패 영역 RectTransform (바 최하단에 고정 배치)")]
+        [SerializeField] private RectTransform failZoneRect;
+
+        [Header("Scroll Bar 2 — Arc")]
+        [Tooltip("GreenZone 이미지 RectTransform (arc 위에 배치)")]
         [SerializeField] private RectTransform greenZoneRect;
 
         [Tooltip("포인터 이미지 RectTransform")]
         [SerializeField] private RectTransform pointerRect;
 
-        [Tooltip("Arc 중심으로 사용할 RectTransform (ArcBar 자체 또는 별도 pivot)")]
+        [Tooltip("Arc 중심 RectTransform")]
         [SerializeField] private RectTransform arcPivot;
 
-        [Tooltip("Arc 반지름 (픽셀, arcPivot 기준)")]
+        [Tooltip("Arc 반지름 (픽셀)")]
         [SerializeField] private float arcRadius = 180f;
 
         [Header("Result Overlay (optional)")]
-        [Tooltip("성공/실패 시 페이드 연출에 사용할 반투명 Image. null 이면 연출 생략.")]
+        [Tooltip("성공/실패 페이드 연출용 반투명 Image. null이면 생략.")]
         [SerializeField] private Image resultOverlay;
 
         // ── 런타임 ───────────────────────────────────────────────────
-        private FocusMiniGameController.MiniGameState _lastState
+        private FocusMiniGameController.MiniGameState lastState
             = FocusMiniGameController.MiniGameState.Idle;
 
-        private bool  _isPlayingResult;
-        private float _resultTimer;
-        private Color _resultTargetColor;
+        private bool  isPlayingResult;
+        private float resultTimer;
+        private Color resultTargetColor;
 
         // ── UIBase 오버라이드 ─────────────────────────────────────────
+
+        private void Awake()
+        {
+            if (focusMiniGameController == null)
+                focusMiniGameController = FocusMiniGameController.Singleton;
+        }
 
         public override void Show()
         {
             base.Show();
-            _isPlayingResult = false;
+            isPlayingResult = false;
             if (resultOverlay != null)
                 resultOverlay.color = Color.clear;
+
+            // 아이콘 적용
+            if (celestialIconImage != null && focusMiniGameController != null)
+            {
+                Sprite icon = focusMiniGameController.CelestialIcon;
+                celestialIconImage.sprite  = icon;
+                celestialIconImage.enabled = icon != null;
+            }
+
+            // 세로 바 성공/실패 영역 위치 고정 배치
+            PlaceFixedZones();
         }
 
         // ── Unity 생명주기 ────────────────────────────────────────────
 
         private void Update()
         {
-            if (FocusMiniGameController.Singleton == null) return;
+            if (focusMiniGameController == null) return;
 
-            FocusMiniGameController ctrl = FocusMiniGameController.Singleton;
+            FocusMiniGameController ctrl = focusMiniGameController;
 
-            // 포인터 위치 갱신 (매 프레임)
+            // 세로 스크롤 노브 위치 갱신
+            UpdateScrollKnob(ctrl.ScrollGraphValue);
+
+            // 포인터·성공 구간 갱신 (원호형 바)
             UpdatePointer(ctrl.PointerPos);
-
-            // 성공 구간 갱신
             UpdateGreenZone(ctrl.GreenCenter, ctrl.GreenWidth);
 
             // 상태 전환 감지 → 연출 트리거
-            if (ctrl.State != _lastState)
+            if (ctrl.State != lastState)
             {
                 OnStateChanged(ctrl.State);
-                _lastState = ctrl.State;
+                lastState = ctrl.State;
             }
 
-            // 결과 오버레이 페이드 진행
-            if (_isPlayingResult)
+            if (isPlayingResult)
                 TickResultOverlay();
         }
 
-        // ── 내부 ─────────────────────────────────────────────────────
+        // ── 세로 스크롤 바 ────────────────────────────────────────────
 
-        /// <summary>정규화 위치(0~1) → arc 각도 → pointerRect 위치·회전 적용.</summary>
-        private void UpdatePointer(float normalizedPos)
+        /// <summary>ScrollGraphValue(0~1) → 세로 바 내 노브 anchoredPosition.y 갱신.</summary>
+        private void UpdateScrollKnob(float value)
         {
-            if (pointerRect == null || arcPivot == null) return;
+            if (scrollKnobRect == null || scrollBarBackground == null) return;
 
-            float angle = NormalizedToArcAngle(normalizedPos);
-            pointerRect.anchoredPosition = AngleToArcPosition(angle);
+            float barHeight  = scrollBarBackground.rect.height;
+            float halfHeight = barHeight * 0.5f;
+            float knobHalf   = scrollKnobRect.rect.height * 0.5f;
+
+            float minY = -halfHeight + knobHalf;
+            float maxY =  halfHeight - knobHalf;
+
+            float y = Mathf.Lerp(minY, maxY, value);
+            scrollKnobRect.anchoredPosition = new Vector2(scrollKnobRect.anchoredPosition.x, y);
         }
 
-        /// <summary>GreenZone의 중심과 너비를 arc 위 위치·각도로 변환해 적용.</summary>
-        private void UpdateGreenZone(float center, float width)
+        /// <summary>성공·실패 고정 영역을 바 높이에 맞춰 한 번 배치합니다.</summary>
+        private void PlaceFixedZones()
         {
-            if (greenZoneRect == null || arcPivot == null) return;
+            if (scrollBarBackground == null) return;
 
-            // 중심 위치
-            float centerAngle = NormalizedToArcAngle(center);
-            greenZoneRect.anchoredPosition = AngleToArcPosition(centerAngle);
+            float barHeight  = scrollBarBackground.rect.height;
+            float halfHeight = barHeight * 0.5f;
 
-            // 너비 → arc 호의 픽셀 길이를 sizeDelta.x 로 반영
-            float arcLengthPx = width * ARC_RANGE_DEG * Mathf.Deg2Rad * arcRadius;
+            // 성공 영역: SuccessThreshold 이상 (상단)
+            if (successZoneRect != null && focusMiniGameController != null)
+            {
+                float threshold = focusMiniGameController.SuccessThreshold;
+                float topY      = halfHeight;
+                float bottomY   = Mathf.Lerp(-halfHeight, halfHeight, threshold);
+                float height    = topY - bottomY;
+                float centerY   = (topY + bottomY) * 0.5f;
+
+                successZoneRect.anchoredPosition = new Vector2(successZoneRect.anchoredPosition.x, centerY);
+                successZoneRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(4f, height));
+            }
+
+            // 실패 영역: 하단 고정 (0~10% 높이)
+            if (failZoneRect != null)
+            {
+                float failHeight = barHeight * 0.08f;
+                float centerY    = -halfHeight + failHeight * 0.5f;
+
+                failZoneRect.anchoredPosition = new Vector2(failZoneRect.anchoredPosition.x, centerY);
+                failZoneRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(4f, failHeight));
+            }
+        }
+
+        // ── 원호형 바 ────────────────────────────────────────────────
+
+        private void UpdatePointer(float angleDeg)
+        {
+            if (pointerRect == null) return;
+            pointerRect.localRotation = Quaternion.Euler(0f, 0f, angleDeg);
+        }
+
+        private void UpdateGreenZone(float centerDeg, float widthDeg)
+        {
+            if (greenZoneRect == null) return;
+
+            greenZoneRect.localRotation = Quaternion.Euler(0f, 0f, centerDeg);
+
+            float arcLengthPx = widthDeg * Mathf.Deg2Rad * arcRadius;
             greenZoneRect.sizeDelta = new Vector2(Mathf.Max(4f, arcLengthPx), greenZoneRect.sizeDelta.y);
-
-            // 중심 각도에 맞게 회전 (호를 따라 눕힘)
-            greenZoneRect.localRotation = Quaternion.Euler(0f, 0f, -centerAngle);
         }
 
-        /// <summary>정규화 0~1 → arc 각도(도, 시계 방향 UI 기준)</summary>
-        private static float NormalizedToArcAngle(float t)
-        {
-            return ARC_START_DEG + t * ARC_RANGE_DEG;
-        }
-
-        /// <summary>arc 각도 → arcPivot 기준 anchoredPosition</summary>
-        private Vector2 AngleToArcPosition(float angleDeg)
-        {
-            // Unity UI: 0° = 위쪽(+Y), 시계방향 양수
-            float rad = angleDeg * Mathf.Deg2Rad;
-            return new Vector2(
-                Mathf.Sin(rad)  * arcRadius,
-                Mathf.Cos(rad)  * arcRadius
-            );
-        }
+        // ── 상태 전환 연출 ────────────────────────────────────────────
 
         private void OnStateChanged(FocusMiniGameController.MiniGameState newState)
         {
@@ -152,14 +211,8 @@ namespace TST
                 case FocusMiniGameController.MiniGameState.Success:
                     BeginResultOverlay(COLOR_SUCCESS);
                     break;
-
                 case FocusMiniGameController.MiniGameState.Fail:
                     BeginResultOverlay(COLOR_FAIL);
-                    break;
-
-                case FocusMiniGameController.MiniGameState.Idle:
-                    // FocusMiniGameController.EndMinigame() 이 UIManager.Hide 를 호출하므로
-                    // 이 UI 는 곧 비활성화됩니다. 별도 처리 불필요.
                     break;
             }
         }
@@ -167,37 +220,37 @@ namespace TST
         private void BeginResultOverlay(Color targetColor)
         {
             if (resultOverlay == null) return;
-            _resultTargetColor = targetColor;
-            _resultTimer       = 0f;
-            _isPlayingResult   = true;
+            resultTargetColor  = targetColor;
+            resultTimer        = 0f;
+            isPlayingResult    = true;
             resultOverlay.color = Color.clear;
         }
 
         private void TickResultOverlay()
         {
-            _resultTimer += Time.deltaTime;
+            resultTimer += Time.deltaTime;
 
             float total = RESULT_FADE_IN_DURATION + RESULT_HOLD_DURATION + RESULT_FADE_OUT_DURATION;
 
-            if (_resultTimer <= RESULT_FADE_IN_DURATION)
+            if (resultTimer <= RESULT_FADE_IN_DURATION)
             {
-                float t = _resultTimer / RESULT_FADE_IN_DURATION;
-                resultOverlay.color = Color.Lerp(Color.clear, _resultTargetColor, t);
+                float t = resultTimer / RESULT_FADE_IN_DURATION;
+                resultOverlay.color = Color.Lerp(Color.clear, resultTargetColor, t);
             }
-            else if (_resultTimer <= RESULT_FADE_IN_DURATION + RESULT_HOLD_DURATION)
+            else if (resultTimer <= RESULT_FADE_IN_DURATION + RESULT_HOLD_DURATION)
             {
-                resultOverlay.color = _resultTargetColor;
+                resultOverlay.color = resultTargetColor;
             }
-            else if (_resultTimer <= total)
+            else if (resultTimer <= total)
             {
-                float t = (_resultTimer - RESULT_FADE_IN_DURATION - RESULT_HOLD_DURATION)
+                float t = (resultTimer - RESULT_FADE_IN_DURATION - RESULT_HOLD_DURATION)
                           / RESULT_FADE_OUT_DURATION;
-                resultOverlay.color = Color.Lerp(_resultTargetColor, Color.clear, t);
+                resultOverlay.color = Color.Lerp(resultTargetColor, Color.clear, t);
             }
             else
             {
                 resultOverlay.color = Color.clear;
-                _isPlayingResult = false;
+                isPlayingResult    = false;
             }
         }
     }

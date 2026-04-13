@@ -78,6 +78,8 @@ namespace TST
         [SerializeField] private TextMeshProUGUI dialogueLabel;
         [SerializeField] private Button autoPlayButton;
         [SerializeField] private Button logButton;
+        [SerializeField] private Button inventoryButton;
+        [SerializeField] private InventoryPopupUI inventoryPopup;
 
         // ----------------------------------------------------------------
         //  ResponsiveLayout
@@ -115,6 +117,9 @@ namespace TST
 
             if (logButton != null)
                 logButton.onClick.AddListener(OnLogClicked);
+
+            if (inventoryButton != null)
+                inventoryButton.onClick.AddListener(OnInventoryClicked);
         }
 
         private void Update()
@@ -201,6 +206,11 @@ namespace TST
         {
             // TODO: open dialogue log popup.
             Debug.Log("[MainLayoutController] Log button clicked.");
+        }
+
+        private void OnInventoryClicked()
+        {
+            inventoryPopup?.Show();
         }
 
         // ----------------------------------------------------------------

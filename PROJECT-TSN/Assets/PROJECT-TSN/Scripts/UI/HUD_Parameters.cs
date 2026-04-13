@@ -12,8 +12,7 @@ namespace TST
     /// </summary>
     public class HUD_Parameters : UIBase
     {
-        public override bool IsVisibleCursor { get; set; } = true;
-
+        private void Awake() { isVisibleCursor = true; }
         [Header("Root Objects")]
         [SerializeField] private GameObject fameRoot;
         [SerializeField] private GameObject sanityRoot;

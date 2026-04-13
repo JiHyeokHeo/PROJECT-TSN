@@ -10,7 +10,7 @@ namespace TST
     /// 가속·감속 개념을 갖추며, 속도 0(정선 상태)에서만 능동 상호작용이 허용됩니다.
     /// Input System(Keyboard.current) 방식 사용 — PlayerInput 컴포넌트 불필요.
     /// </summary>
-    public class VesselController : SingletonBase<VesselController>
+    public class VesselController : MonoBehaviour
     {
         // ── 설정 ─────────────────────────────────────────────────────
 
@@ -37,6 +37,11 @@ namespace TST
 
         [Header("Visual")]
         [SerializeField] Transform visual;
+
+        [Header("Phase")]
+        [Tooltip("Fishing 페이즈 진입/이탈 시 토글되는 Vessel 루트 (Character의 Vessel 자식)")]
+        [SerializeField] private GameObject vesselRoot;
+
         // ── 프로퍼티 ─────────────────────────────────────────────────
 
         /// <summary>현재 이동 속도. 양수 = 전진, 음수 = 후진.</summary>
@@ -60,17 +65,37 @@ namespace TST
 
         // ─────────────────────────────────────────────────────────────
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             _maxBackwardSpeed = maxForwardSpeed * backwardSpeedRatio;
             FacingAngle       = transform.eulerAngles.y;
+
+            PhaseManager.Singleton.OnPhaseChanged += HandlePhaseChanged;
+
+            // 초기 상태: Fishing 페이즈가 아니면 Vessel 비활성화
+            if (vesselRoot != null)
+                vesselRoot.SetActive(PhaseManager.Singleton.CurrentPhase == GamePhase.Fishing);
+        }
+
+        private void OnDestroy()
+        {
+            if (PhaseManager.Singleton != null)
+                PhaseManager.Singleton.OnPhaseChanged -= HandlePhaseChanged;
+        }
+
+        private void HandlePhaseChanged(GamePhase oldPhase, GamePhase newPhase)
+        {
+            bool isFishing = newPhase == GamePhase.Fishing;
+            if (vesselRoot != null)
+                vesselRoot.SetActive(isFishing);
+
+            if (!isFishing)
+                CurrentSpeed = 0f;
         }
 
         private void Update()
         {
-            //if (FishingPhaseController.Singleton == null || !FishingPhaseController.Singleton.IsActive)
-            //    return;
+            if (PhaseManager.Singleton.CurrentPhase != GamePhase.Fishing) return;
 
             var kb = Keyboard.current;
             if (kb == null) return;
@@ -82,8 +107,7 @@ namespace TST
 
         private void LateUpdate()
         {
-            //if (cinCam == null)
-            //    return;
+            if (PhaseManager.Singleton.CurrentPhase != GamePhase.Fishing) return;
 
             visual.rotation = Camera.main.transform.rotation;
         }

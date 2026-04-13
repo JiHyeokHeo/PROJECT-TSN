@@ -19,6 +19,10 @@ namespace TST
     public class NightTelescopePopupUI : UIBase
     {
         // ── 직렬화 필드 ──────────────────────────────────────────────
+        [Header("Dependencies")]
+        [SerializeField] private FishingTransitionController fishingTransitionController;
+
+        [Header("Buttons")]
         [SerializeField] private Button fishingBtn;
         [SerializeField] private Button waitBtn;
         [SerializeField] private Button endingBtn;
@@ -40,6 +44,18 @@ namespace TST
                 endingBtn.onClick.AddListener(OnEndingClicked);
         }
 
+        // ── 공개 API ─────────────────────────────────────────────────
+
+        /// <summary>
+        /// Show 직후 TelescopeObject에서 호출해 씬 의존성을 주입합니다.
+        /// UIManager가 Resources에서 인스턴스화하므로 prefab에 직접 연결할 수 없어
+        /// 호출자가 컨텍스트를 알고 있는 Show 시점에 넘겨주는 방식을 사용합니다.
+        /// </summary>
+        public void Initialize(FishingTransitionController controller)
+        {
+            fishingTransitionController = controller;
+        }
+
         // ── UIBase 오버라이드 ─────────────────────────────────────────
 
         public override void Show()
@@ -53,7 +69,7 @@ namespace TST
         private void OnFishingClicked()
         {
             Hide();
-            PhaseManager.Singleton.TransitionTo(GamePhase.Fishing);
+            fishingTransitionController?.BeginTransition();
         }
 
         private void OnWaitClicked()

@@ -14,12 +14,14 @@ namespace TST
     /// </summary>
     public class VesselDirectionPointer : MonoBehaviour
     {
+        [SerializeField] private VesselController vesselController;
+
         private void LateUpdate()
         {
-            if (VesselController.Singleton == null) return;
+            if (vesselController == null) return;
 
             // X=90° 로 바닥에 눕히고, Y만 이동 방향으로 회전
-            transform.rotation = Quaternion.Euler(90f, VesselController.Singleton.FacingAngle, 0f);
+            transform.rotation = Quaternion.Euler(90f, vesselController.FacingAngle, 0f);
         }
     }
 }

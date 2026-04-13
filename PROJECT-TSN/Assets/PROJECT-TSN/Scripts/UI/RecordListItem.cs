@@ -1,7 +1,7 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace TST
 {
@@ -18,7 +18,8 @@ namespace TST
     {
         [SerializeField] private TextMeshProUGUI nameLabel;
         [SerializeField] private TextMeshProUGUI rarityLabel;
-        [SerializeField] private Button selectButton;
+        [SerializeField] private Button          selectButton;
+        [SerializeField] private Image           iconImage;
 
         private string _recordId;
         private Action<string> _onSelected;
@@ -42,6 +43,21 @@ namespace TST
 
             if (rarityLabel != null)
                 rarityLabel.text = record.rarity.ToString();
+
+            if (iconImage != null)
+                iconImage.color = GetRarityColor(record.rarity);
+        }
+
+        private static Color GetRarityColor(Rarity rarity)
+        {
+            switch (rarity)
+            {
+                case Rarity.Common:    return Color.white;
+                case Rarity.Uncommon:  return new Color(0.4f, 1f,    0.4f, 1f);
+                case Rarity.Rare:      return new Color(0.4f, 0.6f,  1f,   1f);
+                case Rarity.Legendary: return new Color(1f,   0.85f, 0f,   1f);
+                default:               return Color.white;
+            }
         }
 
         private void OnClicked()

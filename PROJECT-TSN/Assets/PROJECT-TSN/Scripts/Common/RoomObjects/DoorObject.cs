@@ -20,6 +20,18 @@ namespace TST
                 PhaseManager.Singleton.OnPhaseChanged -= HandlePhaseChanged;
         }
 
+        // ----------------------------------------------------------------
+        private void OnEnable()
+        {
+            PhaseManager.Singleton.OnPhaseChanged += HandlePhaseChanged;
+        }
+
+        private void OnDisable()
+        {
+            if (PhaseManager.Singleton != null)
+                PhaseManager.Singleton.OnPhaseChanged -= HandlePhaseChanged;
+        }
+
         private void HandlePhaseChanged(GamePhase oldPhase, GamePhase newPhase)
         {
             IsInteractable = newPhase == GamePhase.DayAttic;

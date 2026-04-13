@@ -9,6 +9,7 @@ namespace TST
         DayAttic,
         DayCity,
         NightA,
+        Space,
         Fishing,
         NightB,
         Dream
@@ -52,9 +53,15 @@ namespace TST
             {
                 GamePhase.NightA, new HashSet<GamePhase>
                 {
-                    GamePhase.Fishing,
+                    GamePhase.Space,
                     GamePhase.Dream,
                     GamePhase.DayAttic   // skip night — go straight to next day
+                }
+            },
+            {
+                GamePhase.Space, new HashSet<GamePhase>
+                {
+                    GamePhase.Fishing    // field selection always leads to fishing
                 }
             },
             {
@@ -158,6 +165,7 @@ namespace TST
         private static bool IsNightSidePhase(GamePhase phase)
         {
             return phase == GamePhase.NightA
+                || phase == GamePhase.Space
                 || phase == GamePhase.Fishing
                 || phase == GamePhase.NightB
                 || phase == GamePhase.Dream;
