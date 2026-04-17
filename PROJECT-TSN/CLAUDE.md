@@ -23,6 +23,12 @@ Important paths
 * Packages/manifest.json
 * ProjectSettings/ProjectVersion.txt
 
+Design baseline docs
+
+* C:/Users/HEOJIHYEOK/Downloads/_UIUX 레파토리 기획서.pdf
+* C:/Users/HEOJIHYEOK/Downloads/낚시 게임 파트 기획서.pdf
+* Keep these docs as the default source of truth for layout/phase UI behavior.
+
 Agent files
 
 * .claude/agents/requirement-planner.md
@@ -96,4 +102,3 @@ Work order
 * Read relevant files before changing architecture.
 * For new features: data model -> logic -> UI.
 * For debugging: state hypothesis, evidence, and fix.
-
