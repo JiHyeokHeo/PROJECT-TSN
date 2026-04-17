@@ -1,1 +1,2 @@
 - [Starry Night Base Systems](project_starry_night_base_systems.md) — Core singletons (PlayerParameters, ObservationJournal, TelescopeData, PhaseManager) and UI (HUD_Parameters, MainLayoutController) for The Starry Night
+- [Phase 1 Core Infrastructure](project_phase1_core_infra.md) — SaveSystem, UIList, TitleUI, SaveScreenUI, LoadScreenUI, MenuPopupUI, OptionsPopupUI all complete. ESC-lock fix applied to TitleUI.

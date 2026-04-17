@@ -27,8 +27,6 @@ namespace TST
 
         // ── 설정 필드 ────────────────────────────────────────────────
         [SerializeField] private float          totalTime      = 300f;
-        [SerializeField] private FishingHudUI   fishingHudUI;
-        [SerializeField] private FishingTimerUI fishingTimerUI;
 
         [Header("Dependencies")]
         [SerializeField] private VesselController         vesselController;
@@ -69,8 +67,8 @@ namespace TST
             IsActive             = true;
             IsSkipConfirmShowing = false;
 
-            fishingHudUI?.Show();
-            fishingTimerUI?.Show();
+            UIManager.Show<FishingHudUI>(UIList.Panel_FishingHUD);
+            UIManager.Show<FishingTimerUI>(UIList.Panel_FishingTimer);
 
             Debug.Log($"[FishingPhaseController] 낚시 시작 — 구역: {zone.zoneName}");
         }
@@ -82,8 +80,8 @@ namespace TST
 
             IsActive = false;
 
-            fishingHudUI?.Hide();
-            fishingTimerUI?.Hide();
+            UIManager.Hide<FishingHudUI>(UIList.Panel_FishingHUD);
+            UIManager.Hide<FishingTimerUI>(UIList.Panel_FishingTimer);
             Debug.Log("[FishingPhaseController] 낚시 종료 — NightB 페이즈로 전환.");
 
             // PhaseManager.TransitionTo(NightB)는 FishingTransitionController.FishingExitRoutine에서

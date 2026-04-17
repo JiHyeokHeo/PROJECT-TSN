@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // TODO : 해상도 EXCHANGE 코드인거 같음. 
@@ -79,7 +78,10 @@ namespace TST
         [SerializeField] private Button autoPlayButton;
         [SerializeField] private Button logButton;
         [SerializeField] private Button inventoryButton;
-        [SerializeField] private InventoryPopupUI inventoryPopup;
+
+        [Header("Main HUD Framework Roots (Optional)")]
+        [SerializeField] private Transform mainHudPanelRoot;
+        [SerializeField] private Transform mainHudPopupRoot;
 
         // ----------------------------------------------------------------
         //  ResponsiveLayout
@@ -90,6 +92,9 @@ namespace TST
         // ----------------------------------------------------------------
         private GameObject _activeLeftPrefab;
         private GameObject _activeRightPrefab;
+
+        public Transform MainHudPanelRoot => mainHudPanelRoot != null ? mainHudPanelRoot : transform;
+        public Transform MainHudPopupRoot => mainHudPopupRoot != null ? mainHudPopupRoot : transform;
 
         // ----------------------------------------------------------------
         //  Unity lifecycle
@@ -111,6 +116,8 @@ namespace TST
             //Cursor.visible = true;
             //if (dialogueBox != null)
             //    dialogueBox.gameObject.SetActive(false);
+
+            
 
             if (autoPlayButton != null)
                 autoPlayButton.onClick.AddListener(OnAutoPlayClicked);
@@ -210,7 +217,7 @@ namespace TST
 
         private void OnInventoryClicked()
         {
-            inventoryPopup?.Show();
+            UIManager.Show<InventoryPopupUI>(UIList.Popup_Inventory);
         }
 
         // ----------------------------------------------------------------

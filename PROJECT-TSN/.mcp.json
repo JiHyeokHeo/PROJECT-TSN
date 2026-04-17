@@ -1,9 +1,9 @@
-{
+﻿{
   "mcpServers": {
     "toryagent": {
       "command": "dotnet",
       "args": [
-        "Tools/ToryAgent.McpServer/bin/Debug/net8.0/ToryAgent.McpServer.dll"
+        "C:/Users/HEOJIHYEOK/Desktop/PROJECT-TSN/PROJECT-TSN/Tools/ToryAgent.McpServer/bin/Debug/net8.0/ToryAgent.McpServer.dll"
       ]
     }
   }

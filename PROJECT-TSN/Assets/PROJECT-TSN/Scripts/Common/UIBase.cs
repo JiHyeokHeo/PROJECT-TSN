@@ -25,12 +25,24 @@ namespace TST
 
         public virtual void Show()
         {
+            bool wasVisible = gameObject.activeSelf;
             gameObject.SetActive(true);
+
+            if (!wasVisible)
+            {
+                UIManager.NotifyVisibilityChangedFromUIBase(this, true);
+            }
         }
 
         public virtual void Hide()
         {
+            bool wasVisible = gameObject.activeSelf;
             gameObject.SetActive(false);
+
+            if (wasVisible)
+            {
+                UIManager.NotifyVisibilityChangedFromUIBase(this, false);
+            }
         }
     }
 }

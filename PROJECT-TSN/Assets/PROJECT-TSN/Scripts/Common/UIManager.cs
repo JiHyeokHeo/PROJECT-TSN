@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,13 @@ namespace TST
 {
     public class UIManager : SingletonBase<UIManager>
     {
+        public event Action<UIList, bool, UIBase> OnUIVisibilityChanged;
+
         public static T Show<T>(UIList uiPrefabName) where T : UIBase
         {
             if (Singleton.GetUI<T>(uiPrefabName, out T result))
             {
+                Singleton.RegisterUIInstance(uiPrefabName, result);
                 result.Show();
 
                 if (result.IsVisibleCursor)
@@ -31,6 +35,7 @@ namespace TST
         {
             if (Singleton.GetUI<T>(uiPrefabName, out T result))
             {
+                Singleton.RegisterUIInstance(uiPrefabName, result);
                 result.Hide();
 
                 if (result.IsVisibleCursor)
@@ -53,6 +58,7 @@ namespace TST
 
         private Dictionary<UIList, UIBase> panels = new Dictionary<UIList, UIBase>();
         private Dictionary<UIList, UIBase> popups = new Dictionary<UIList, UIBase>();
+        private Dictionary<UIBase, UIList> uiTypeByInstance = new Dictionary<UIBase, UIList>();
 
         private Transform panelRoot;
         private Transform popupRoot;
@@ -134,6 +140,8 @@ namespace TST
                 }
             }
 
+            RegisterUIInstance(uiPrefabName, container[uiPrefabName]);
+
             return (T)container[uiPrefabName];
         }
 
@@ -154,6 +162,75 @@ namespace TST
                     popup.Value.Hide();
                 }
             }
+        }
+
+        public static bool TryGetExisting(out UIManager uiManager)
+        {
+            uiManager = FindFirstObjectByType<UIManager>();
+            return uiManager != null;
+        }
+
+        internal static void NotifyVisibilityChangedFromUIBase(UIBase ui, bool isVisible)
+        {
+            if (ui == null)
+                return;
+
+            if (TryGetExisting(out UIManager uiManager))
+            {
+                uiManager.NotifyVisibilityChanged(ui, isVisible);
+            }
+        }
+
+        private void RegisterUIInstance(UIList uiType, UIBase uiInstance)
+        {
+            if (uiInstance == null)
+                return;
+
+            uiTypeByInstance[uiInstance] = uiType;
+        }
+
+        private void NotifyVisibilityChanged(UIBase uiInstance, bool isVisible)
+        {
+            if (uiInstance == null)
+                return;
+
+            if (!TryResolveUIType(uiInstance, out UIList uiType))
+                return;
+
+            OnUIVisibilityChanged?.Invoke(uiType, isVisible, uiInstance);
+        }
+
+        private bool TryResolveUIType(UIBase uiInstance, out UIList uiType)
+        {
+            if (uiInstance == null)
+            {
+                uiType = default;
+                return false;
+            }
+
+            if (uiTypeByInstance.TryGetValue(uiInstance, out uiType))
+                return true;
+
+            string normalizedName = NormalizeUIObjectName(uiInstance.gameObject.name);
+            if (Enum.TryParse(normalizedName, true, out uiType))
+            {
+                uiTypeByInstance[uiInstance] = uiType;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static string NormalizeUIObjectName(string rawName)
+        {
+            if (string.IsNullOrEmpty(rawName))
+                return string.Empty;
+
+            string normalizedName = rawName.Replace("(Clone)", string.Empty).Trim();
+            if (normalizedName.StartsWith("UI.", StringComparison.Ordinal))
+                normalizedName = normalizedName.Substring(3);
+
+            return normalizedName;
         }
     }
 }

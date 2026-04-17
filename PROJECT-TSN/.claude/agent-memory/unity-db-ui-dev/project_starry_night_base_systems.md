@@ -16,5 +16,3 @@ Files created:
 
 UIList.cs updated with Starry Night panels and popups between sentinel values.
 
-**Why:** New game replacing idle garden game. Old GameManager/UserDataModel/GameDataModel are commented out and must not be reused.
-**How to apply:** All new game systems are standalone singletons. Do not couple to old Idle game classes. Persistence via FileManager.WriteFileFromString/ReadFileData — calls left as TODO stubs in each Save()/Load() method.
